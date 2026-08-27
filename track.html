@@ -4,7 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Track Order — TIFFIN</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=5">
+<style>
+  html, body {
+    height: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+  }
+
+  .track-wrap {
+    flex: 1 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 24px 16px 60px !important;
+    width: 100% !important;
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .page-title {
+    font-family: var(--display);
+    font-size: clamp(24px, 4vw, 36px);
+    margin: 6px 0 24px;
+  }
+
+  .track-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+  }
+
+  @media (max-width: 880px) {
+    .track-layout { grid-template-columns: 1fr; }
+  }
+
+  .timeline { padding: 24px; }
+  .tl-item { display: flex; gap: 16px; padding-bottom: 24px; position: relative; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before { content: ""; position: absolute; left: 11px; top: 26px; bottom: 0; width: 2px; background: rgba(255, 255, 255, 0.1); }
+  .tl-item:last-child::before { display: none; }
+  .tl-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(15, 23, 42, 0.8); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .tl-item.done .tl-dot { background: var(--mint); border-color: var(--mint); color: #000; }
+  .tl-item.current .tl-dot { background: var(--honey); border-color: var(--honey); }
+  .tl-title { font-weight: 700; font-size: 15px; }
+  .tl-item.done .tl-title, .tl-item.current .tl-title { color: #fff; }
+  .tl-item:not(.done):not(.current) .tl-title { color: var(--ink-soft); }
+  .tl-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+  .track-ticket { padding: 24px; }
+  .track-order-items { margin-top: 14px; }
+  .order-item-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; }
+
+  .picker { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .order-pick { border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(15, 23, 42, 0.6); padding: 8px 14px; border-radius: 999px; font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
+  .order-pick.active { background: var(--ice-cyan); border-color: var(--ice-cyan); color: #000; }
+
+  .foot {
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    width: 100% !important;
+    background: rgba(6, 9, 19, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 0 !important;
+  }
+
+  .foot .wrap {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    color: #94A3B8 !important;
+  }
+</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -24,33 +103,6 @@
 
 <div id="toast"></div>
 <script src="app.js"></script>
-<style>
-  .track-wrap{ padding:44px 0 80px; }
-  .page-title{ font-family:var(--display); font-size:clamp(28px,4vw,38px); margin:8px 0 30px; }
-  .track-layout{ display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:start; }
-  @media (max-width:880px){ .track-layout{ grid-template-columns:1fr; } }
-
-  .timeline{ padding:28px; }
-  .tl-item{ display:flex; gap:16px; padding-bottom:26px; position:relative; }
-  .tl-item:last-child{ padding-bottom:0; }
-  .tl-item::before{ content:""; position:absolute; left:11px; top:26px; bottom:0; width:2px; background:var(--line); }
-  .tl-item:last-child::before{ display:none; }
-  .tl-dot{ width:24px; height:24px; border-radius:50%; border:2px solid var(--line); background:var(--paper); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; }
-  .tl-item.done .tl-dot{ background:var(--mint); border-color:var(--mint); color:#fff; }
-  .tl-item.current .tl-dot{ background:var(--turmeric); border-color:var(--turmeric); }
-  .tl-title{ font-weight:700; font-size:15px; }
-  .tl-item.done .tl-title, .tl-item.current .tl-title{ color:var(--ink); }
-  .tl-item:not(.done):not(.current) .tl-title{ color:var(--ink-soft); }
-  .tl-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
-
-  .track-ticket{ padding:26px; }
-  .track-order-items{ margin-top:14px; }
-  .order-item-row{ display:flex; justify-content:space-between; font-size:13px; padding:5px 0; }
-
-  .picker{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
-  .order-pick{ border:2px solid var(--line); background:var(--paper); padding:9px 14px; border-radius:999px; font-family:var(--mono); font-size:12.5px; font-weight:700; }
-  .order-pick.active{ background:var(--ink); border-color:var(--ink); color:var(--cream); }
-</style>
 <script>
   renderNav('track');
   const student = requireStudentAuth();
@@ -128,7 +180,7 @@
   }
 
   draw();
-  setInterval(draw, 4000); // reflect kitchen status changes made from the admin dashboard
+  setInterval(draw, 4000);
 </script>
 </body>
 </html>

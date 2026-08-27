@@ -207,8 +207,21 @@
 </script>
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(err => {
-      console.log('SW registration skipped:', err);
+    let refreshing = false;
+
+    // Detect when the new service worker takes over and refresh the app
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        // Check for updates on every app launch
+        reg.update();
+      });
     });
   }
 </script>

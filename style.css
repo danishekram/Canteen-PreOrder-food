@@ -22,7 +22,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* 1. Ambient Background Glowing Meshes (Crucial for Glass Effect) */
+/* 1. Ambient Background Glowing Meshes */
 body {
   margin: 0;
   font-family: var(--body);
@@ -217,11 +217,10 @@ body::after {
   border: 1px solid var(--ice-cyan);
   box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.3);
 }
+
 /* ============================================================
    Custom Styled Select & Dark Dropdown Options
    ============================================================ */
-
-/* 1. Style the Select input field */
 .search-row select,
 .field select {
   appearance: none;
@@ -234,8 +233,6 @@ body::after {
   padding: 14px 40px 14px 18px !important;
   font-weight: 600;
   cursor: pointer;
-  
-  /* Custom SVG Chevron Arrow */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2338BDF8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 14px center !important;
@@ -247,7 +244,6 @@ body::after {
   box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
 }
 
-/* 2. Style the expanded dropdown list options */
 .search-row select option,
 .field select option {
   background-color: #0B1120 !important;
@@ -261,6 +257,7 @@ body::after {
   background-color: #0284C7 !important;
   color: #FFFFFF !important;
 }
+
 /* ============================================================
    Custom Nordic Frost Glassmorphic Dropdown
    ============================================================ */
@@ -270,7 +267,6 @@ body::after {
   z-index: 100;
 }
 
-/* Glass Trigger Button */
 .glass-select-trigger {
   width: 100%;
   display: flex;
@@ -306,18 +302,17 @@ body::after {
   transform: rotate(180deg);
 }
 
-/* Frosted Dropdown Popup List */
 .glass-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: rgba(11, 17, 32, 0.72) !important;
+  background: rgba(11, 17, 32, 0.95) !important;
   backdrop-filter: blur(24px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
   border: 1px solid rgba(56, 189, 248, 0.3) !important;
   border-radius: 14px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(56, 189, 248, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(56, 189, 248, 0.08) !important;
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -326,6 +321,7 @@ body::after {
   transform: translateY(-8px) scale(0.97);
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 9999 !important;
 }
 
 .glass-select-wrapper.open .glass-dropdown-menu {
@@ -334,7 +330,6 @@ body::after {
   pointer-events: auto;
 }
 
-/* Dropdown Option Items */
 .glass-option {
   padding: 10px 14px;
   border-radius: 9px;
@@ -359,112 +354,26 @@ body::after {
   color: #38BDF8;
   font-weight: 700;
 }
-/* ============================================================
-   Compact Multi-Column Glass Cards Grid
-   ============================================================ */
 
-/* 1. Responsive compact grid (auto-fits 3-4 cards per row) */
-.menu-grid {
+/* ============================================================
+   Multi-Column Food Cards Grid
+   ============================================================ */
+.menu-grid,
+#menuGrid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
   gap: 16px !important;
+  width: 100% !important;
 }
 
-/* 2. Compact box shape & tight padding */
 .food-card {
-  padding: 16px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  min-height: 200px !important;
-  border-radius: 14px !important;
-}
-
-/* 3. Smaller top header with icon & veg tag */
-.food-top {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  margin-bottom: 8px !important;
-}
-
-.food-emoji {
-  font-size: 26px !important;
-  line-height: 1 !important;
-}
-
-/* 4. Compact title & description */
-.food-name {
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  margin: 0 0 4px 0 !important;
-  color: #FFFFFF !important;
-}
-
-.food-desc {
-  font-size: 12px !important;
-  line-height: 1.4 !important;
-  color: #94A3B8 !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2; /* limits description to 2 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin-bottom: 12px !important;
-}
-
-/* 5. Bottom price & action button */
-.food-bottom {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  margin-top: auto !important;
-  padding-top: 8px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-.food-price {
-  font-size: 15px !important;
-  font-weight: 800 !important;
-}
-
-.food-bottom .btn-sm {
-  padding: 6px 12px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-}
-
-/* 6. Quantity selector for compact cards */
-.food-card .qty-row {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-
-.food-card .qty-btn {
-  width: 26px !important;
-  height: 26px !important;
-  padding: 0 !important;
-  font-size: 13px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.food-card .qty-val {
-  font-size: 13px !important;
-  min-width: 14px !important;
-  text-align: center !important;
-}
-/* ============================================================
-   Image-First Glassmorphic Food Card Styling
-   ============================================================ */
-.food-card {
-  padding: 10px !important;
+  padding: 12px !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
-  gap: 10px !important;
+  gap: 8px !important;
   border-radius: 16px !important;
+  width: 100% !important;
 }
 
 .food-img-wrap {
@@ -530,483 +439,46 @@ body::after {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* Fix Dropdown Stacking Context Overlap */
-.menu-hero {
-  position: relative !important;
-  z-index: 100 !important;
-}
 
-.search-row {
-  position: relative !important;
-  z-index: 110 !important;
-}
-
-.glass-select-wrapper {
-  position: relative !important;
-  z-index: 120 !important;
-}
-
-
-.glass-dropdown-menu {
-  z-index: 9999 !important;
-}
-
-.menu-main {
-  position: relative !important;
-  z-index: 1 !important;
-}
-/* ============================================================
-   Navbar Brand & Glass Hamburger Fix
-   ============================================================ */
-
-/* 1. Stack and properly align Brand Title & Subtitle */
-.brand {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  text-decoration: none !important;
-  color: #FFFFFF !important;
-}
-
-.brand div {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  line-height: 1.1 !important;
-}
-
-.brand small {
-  display: block !important;
-  font-family: var(--mono) !important;
-  font-size: 9.5px !important;
-  letter-spacing: 1.5px !important;
-  color: #38BDF8 !important; /* Nordic Cyan */
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  margin-top: 3px !important;
-}
-
-/* 2. Glassmorphic Hamburger Toggle Button */
-.nav-toggle {
-  background: rgba(15, 23, 42, 0.6) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
-  color: #38BDF8 !important; /* Bright cyan icon */
-  border-radius: 10px !important;
-  padding: 8px 12px !important;
-  font-size: 18px !important;
-  line-height: 1 !important;
-  cursor: pointer !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35) !important;
-  transition: all 0.2s ease !important;
-}
-
-.nav-toggle:hover {
-  background: rgba(56, 189, 248, 0.15) !important;
-  border-color: #38BDF8 !important;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3) !important;
-  color: #FFFFFF !important;
-}
-/* ============================================================
-   Empty State & Action Button Layout Fix
-   ============================================================ */
-
-/* 1. Spacious, centered glass container */
-.empty-state {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-  padding: 48px 24px !important;
-  width: 100% !important;
-  min-height: 220px !important;
-}
-
-/* 2. Heading typography */
-.empty-state .big {
-  font-family: var(--display) !important;
-  font-size: 22px !important;
-  font-weight: 700 !important;
-  color: #FFFFFF !important;
-  margin-bottom: 8px !important;
-}
-
-/* 3. Subtitle text */
-.empty-state p {
-  color: #94A3B8 !important;
-  font-size: 14px !important;
-  margin: 0 0 20px 0 !important;
-  max-width: 400px !important;
-}
-
-/* 4. Button alignment & padding */
-.empty-state .btn,
-.empty-state a.btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 10px 22px !important;
-  height: auto !important;
-  line-height: 1.4 !important;
-  text-decoration: none !important;
-  white-space: nowrap !important;
-  overflow: visible !important;
-  margin-top: 6px !important;
-}
-/* ============================================================
-   Fix: Allow Empty State to Hide When Search Has Results
-   ============================================================ */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 48px 24px;
-  width: 100%;
-  min-height: 220px;
-}
-
-/* Ensure JS display:none always takes priority when hidden */
-.empty-state[style*="display: none"],
-.empty-state[style*="display:none"] {
-  display: none !important;
-}
-/* ============================================================
-   Mobile Navigation Drawer & Toggle Fix
-   ============================================================ */
-@media (max-width: 780px) {
-  .nav-toggle {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 1000 !important;
-  }
-
-  .nav-links {
-    position: fixed !important;
-    top: 64px !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: auto !important;
-    background: rgba(6, 9, 19, 0.95) !important;
-    backdrop-filter: blur(25px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.25) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8) !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    padding: 24px 28px !important;
-    gap: 18px !important;
-    z-index: 9999 !important;
-    transform: translateY(-15px) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 0.25s ease, transform 0.25s ease !important;
-  }
-
-  .nav-links.open {
-    transform: translateY(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  .nav-links a {
-    font-size: 16px !important;
-    width: 100% !important;
-    color: #F8FAFC !important;
-  }
-}
-/* ============================================================
-   Auth Page Layout & Glassmorphism Fix (login.html)
-   ============================================================ */
-
-/* 1. Push footer to bottom of viewport */
-body {
-  display: flex !important;
-  flex-direction: column !important;
-  min-height: 100vh !important;
-}
-
-main.auth-wrap {
-  flex: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 60px 0 !important;
-}
-
-.auth-grid {
-  display: grid !important;
-  grid-template-columns: 1.2fr 0.8fr !important;
-  gap: 36px !important;
-  align-items: start !important;
-  width: 100% !important;
-}
-
-/* 2. Glass Auth Panel Container */
-.auth-panel {
-  background: rgba(15, 23, 42, 0.6) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 20px !important;
-  padding: 36px !important;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
-}
-
-/* 3. Glassmorphic Tabs (Log in / Create account) */
-.auth-tabs {
-  display: flex !important;
-  gap: 8px !important;
-  background: rgba(6, 9, 19, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  padding: 5px !important;
-  margin-bottom: 28px !important;
-}
-
-.auth-tab {
-  flex: 1 !important;
-  border: none !important;
-  background: transparent !important;
-  padding: 12px !important;
-  border-radius: 9px !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  color: #94A3B8 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  box-shadow: none !important;
-}
-
-.auth-tab.active {
-  background: rgba(56, 189, 248, 0.2) !important;
-  color: #FFFFFF !important;
-  border: 1px solid rgba(56, 189, 248, 0.4) !important;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
-}
-
-/* 4. Form Fields & Input Spacing */
-.auth-form .field {
-  margin-bottom: 20px !important;
-}
-
-.auth-form .field label {
-  display: block !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1.5px !important;
-  color: #38BDF8 !important;
-  margin-bottom: 8px !important;
-}
-
-.auth-form .field input {
-  width: 100% !important;
-  padding: 14px 16px !important;
-  background: rgba(11, 17, 32, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-radius: 12px !important;
-  color: #FFFFFF !important;
-  font-size: 15px !important;
-}
-
-.auth-form .field input:focus {
-  border-color: #38BDF8 !important;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
-}
-
-.auth-form .btn-turmeric {
-  margin-top: 10px !important;
-  padding: 14px !important;
-  font-size: 15px !important;
-}
-
-.auth-form .small-note {
-  font-size: 12px !important;
-  color: #94A3B8 !important;
-  margin-top: 18px !important;
-  text-align: center !important;
-}
-
-/* 5. Footer Positioning Fix */
-.foot {
-  margin-top: auto !important;
-  width: 100% !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(6, 9, 19, 0.8) !important;
-}
-
-@media (max-width: 860px) {
-  .auth-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-/* ============================================================
-   Single-Column Centered Auth Card (login.html)
-   ============================================================ */
-.auth-grid {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  max-width: 440px !important;
-  margin: 0 auto !important;
-}
-
-.auth-panel {
-  width: 100% !important;
-  max-width: 440px !important;
-}
-/* ============================================================
-   Navbar Brand & Hamburger Spacing Adjustment
-   ============================================================ */
-.nav-inner {
-  max-width: 1080px !important;
-  padding: 12px 20px !important;
+.food-bottom {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
+  margin-top: auto !important;
+  padding-top: 8px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-@media (max-width: 780px) {
-  .nav-inner {
-    padding: 10px 16px !important;
-    gap: 16px !important;
-  }
-
-  .brand {
-    gap: 8px !important;
-    font-size: 18px !important;
-  }
-
-  .brand .dot {
-    width: 8px !important;
-    height: 8px !important;
-  }
-
-  .nav-toggle {
-    padding: 6px 10px !important;
-    font-size: 16px !important;
-  }
-}
-/* ============================================================
-   Auth Submit Buttons Centering & Full Width Fix
-   ============================================================ */
-.auth-form {
-  display: flex !important;
-  flex-direction: column !important;
-  width: 100% !important;
-}
-
-.auth-form .btn,
-.auth-form .btn-turmeric,
-.auth-form button[type="submit"] {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
-  margin: 14px 0 0 0 !important;
-  padding: 14px 20px !important;
+.food-price {
   font-size: 15px !important;
-  border-radius: 12px !important;
-}
-/* ============================================================
-   Fix: Auth Form Tab Toggling (Prevent Dual-Form Visibility)
-   ============================================================ */
-
-/* Ensure hidden form is completely suppressed */
-.auth-form[style*="display: none"],
-.auth-form[style*="display:none"],
-#registerForm[style*="display: none"],
-#registerForm[style*="display:none"],
-#loginForm[style*="display: none"],
-#loginForm[style*="display:none"] {
-  display: none !important;
+  font-weight: 800 !important;
 }
 
-/* Ensure active form uses flex layout */
-.auth-form:not([style*="display: none"]):not([style*="display:none"]) {
+.food-card .qty-row {
   display: flex !important;
-  flex-direction: column !important;
-  width: 100% !important;
-}
-.auth-form .auth-divider {
-  margin: 18px 0 14px 0 !important;
+  align-items: center !important;
+  gap: 6px !important;
 }
 
-.auth-form .btn-google {
-  margin-bottom: 0 !important;
-}
-/* ============================================================
-   Centered Divider & Visible Curved Google Auth Button
-   ============================================================ */
-
-/* 1. Perfect Centering for the Divider */
-.auth-divider {
+.food-card .qty-btn {
+  width: 26px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  font-size: 13px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+.food-card .qty-val {
+  font-size: 13px !important;
+  min-width: 14px !important;
   text-align: center !important;
-  width: 100% !important;
-  margin: 20px 0 16px 0 !important;
-  color: #94A3B8 !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
 }
 
-.auth-divider::before,
-.auth-divider::after {
-  content: "" !important;
-  flex: 1 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-.auth-divider span {
-  padding: 0 14px !important;
-  white-space: nowrap !important;
-}
-
-/* 2. High-Visibility Curved Google Button */
-.btn-google {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 12px !important;
-  width: 100% !important;
-  padding: 13px 20px !important;
-  background: rgba(15, 23, 42, 0.85) !important;
-  border: 1.5px solid rgba(56, 189, 248, 0.4) !important; /* Glowing cyan curved outline */
-  border-radius: 14px !important; /* Smooth curved pill box */
-  color: #FFFFFF !important;
-  font-size: 14.5px !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
-  transition: all 0.25s ease !important;
-}
-
-.btn-google svg {
-  flex-shrink: 0 !important;
-}
-
-.btn-google:hover {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border-color: #38BDF8 !important;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
-  transform: translateY(-2px) !important;
-}
 /* ============================================================
-   Navbar Brand Image, Divider & Auth Layout
+   Navbar Brand & Glass Hamburger
    ============================================================ */
-
-/* 1. Real Photo Circular Logo with Glowing Ring */
 .brand {
   display: flex !important;
   align-items: center !important;
@@ -1025,57 +497,135 @@ main.auth-wrap {
   flex-shrink: 0 !important;
 }
 
-/* 2. Google Auth Button & Centered Divider */
-.auth-divider {
+.brand div {
   display: flex !important;
-  align-items: center !important;
+  flex-direction: column !important;
   justify-content: center !important;
-  text-align: center !important;
-  width: 100% !important;
-  margin: 18px 0 14px 0 !important;
-  color: #94A3B8 !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
+  line-height: 1.1 !important;
 }
 
-.auth-divider::before,
-.auth-divider::after {
-  content: "" !important;
-  flex: 1 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-.auth-divider span {
-  padding: 0 12px !important;
-  white-space: nowrap !important;
-}
-
-.btn-google {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 12px !important;
-  width: 100% !important;
-  padding: 13px 20px !important;
-  background: rgba(15, 23, 42, 0.85) !important;
-  border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
-  border-radius: 14px !important;
-  color: #FFFFFF !important;
-  font-size: 14.5px !important;
+.brand small {
+  display: block !important;
+  font-family: var(--mono) !important;
+  font-size: 9.5px !important;
+  letter-spacing: 1.5px !important;
+  color: #38BDF8 !important;
   font-weight: 700 !important;
-  cursor: pointer !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
-  transition: all 0.25s ease !important;
+  text-transform: uppercase !important;
+  margin-top: 3px !important;
 }
 
-.btn-google:hover {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border-color: #38BDF8 !important;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
-  transform: translateY(-2px) !important;
+.nav-toggle {
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #38BDF8 !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35) !important;
+  transition: all 0.2s ease !important;
 }
+
+.nav-toggle:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3) !important;
+  color: #FFFFFF !important;
+}
+
+/* ============================================================
+   Mobile Navigation Drawer & Overlay Fix
+   ============================================================ */
+#nav-root {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+}
+
+.nav {
+  position: relative !important;
+  width: 100% !important;
+  background: #060913 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  z-index: 99999 !important;
+}
+
+.nav-inner {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 20px !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  position: relative !important;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: #0d1322 !important;
+    border-bottom: 2px solid rgba(56, 189, 248, 0.3) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
+    padding: 18px 24px !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    z-index: 999999 !important;
+  }
+
+  .nav-links.open,
+  .nav-links.active {
+    display: flex !important;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #FBF4E4 !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    padding: 12px 16px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    text-decoration: none !important;
+  }
+
+  .nav-links a:active {
+    background: rgba(56, 189, 248, 0.2) !important;
+    border-color: #38BDF8 !important;
+    color: #38BDF8 !important;
+  }
+}
+
+/* ============================================================
+   Empty State Fix
+   ============================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  width: 100%;
+  min-height: 220px;
+}
+
+.empty-state[style*="display: none"],
+.empty-state[style*="display:none"] {
+  display: none !important;
+}
+
 /* ============================================================
    Cart Pickup Time Slot Buttons Fix
    ============================================================ */
@@ -1086,7 +636,6 @@ main.auth-wrap {
   margin-top: 10px !important;
 }
 
-/* Default state for time buttons */
 .slot-btn {
   background: rgba(15, 23, 42, 0.75) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
@@ -1107,11 +656,10 @@ main.auth-wrap {
   color: #FFFFFF !important;
 }
 
-/* Selected/Active time slot button */
 .slot-btn.active {
-  background: #F59E0B !important; /* Honey/Amber glow */
+  background: #F59E0B !important;
   border-color: #F59E0B !important;
-  color: #060913 !important; /* Dark legible text on amber */
+  color: #060913 !important;
   font-weight: 800 !important;
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.45) !important;
 }
@@ -1121,71 +669,10 @@ main.auth-wrap {
   cursor: not-allowed !important;
   text-decoration: line-through !important;
 }
+
 /* ============================================================
-   Universal Multi-Column Grid Fix
+   Buttons & Hero Hover Effects
    ============================================================ */
-/* Target all possible menu container wrappers */
-.menu-grid,
-.food-grid,
-.menu-list,
-#menuGrid,
-#menuContainer,
-#dishesList,
-main.wrap > .grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
-  gap: 20px !important;
-  width: 100% !important;
-}
-
-/* Ensure individual cards expand to fit the grid column */
-.food-card,
-.dish-card,
-.menu-card,
-.panel.food {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-}
-/* ============================================================
-   Universal Multi-Column Grid Fix
-   ============================================================ */
-.menu-grid,
-#menuGrid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 20px !important;
-  width: 100% !important;
-}
-
-.food-card {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-}
-
-@media (max-width: 900px) {
-  .menu-grid,
-  #menuGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 580px) {
-  .menu-grid,
-  #menuGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 10px !important;
-  }
-}
-/* ============================================================
-   Button Padding, Text Overflow & Feature Card Spacing Fix
-   ============================================================ */
-
-/* 1. Fix Button text touching pill boundaries (Photos 1 & 3) */
 .btn,
 .btn-turmeric,
 a.btn,
@@ -1204,9 +691,18 @@ button.btn {
   text-decoration: none !important;
   white-space: nowrap !important;
   box-sizing: border-box !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease-in-out !important;
 }
 
-/* Fix button groups/rows */
+a.btn-turmeric:hover,
+.btn-turmeric:hover {
+  transform: translateY(-3px) scale(1.04) !important;
+  background-color: #F59E0B !important;
+  border-color: #FBBF24 !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.65), 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
 .hero-cta,
 .cta-row,
 .btn-row {
@@ -1217,329 +713,52 @@ button.btn {
   margin-top: 20px !important;
 }
 
-/* 2. Fix 0 gap between feature cards (Photo 2) */
-.features-grid,
-.steps-grid,
-.feature-list,
-.how-it-works-grid {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 20px !important;
-  margin: 24px 0 !important;
-}
-
-.panel.step-card,
-.panel.feature-card,
-.feature-item,
-.step-item {
-  margin-bottom: 0 !important;
-  padding: 24px !important;
-}
 /* ============================================================
-   Landing Page / How It Works Step Cards Spacing Fix
+   Step Cards & Teaser Cards Hover Effects
    ============================================================ */
-/* Target any direct sequential panels in a section */
-.steps,
-.how-it-works,
-.steps-list,
-.feature-cards,
-section .panel + .panel {
+.step-grid,
+.steps-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+  width: 100% !important;
   margin-top: 24px !important;
 }
 
-/* Force vertical spacing on parent container */
-main > .panel,
-.steps-grid > .panel,
-.how-it-works > .panel {
-  margin-bottom: 24px !important;
-}
-/* ============================================================
-   Admin / Kitchen Dashboard Login Form Layout & Centering Fix
-   ============================================================ */
-/* 1. Ensure the form container is a structured column */
-.admin-login-wrap form,
-.kitchen-login form,
-#adminLoginForm,
-form.admin-form {
+.step-card,
+.panel.step-card {
+  position: relative !important;
   display: flex !important;
   flex-direction: column !important;
-  width: 100% !important;
-  margin-top: 20px !important;
+  padding: 30px 24px !important;
+  border-radius: 18px !important;
+  background: rgba(15, 23, 42, 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+  cursor: pointer !important;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease !important;
 }
 
-/* 2. Fix field rows so labels appear above inputs with full width */
-.admin-login-wrap .field,
-.kitchen-login .field,
-form.admin-form .field,
-#adminLoginForm .field {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  width: 100% !important;
-  margin-bottom: 18px !important;
-}
-
-/* 3. Style labels clearly */
-.admin-login-wrap .field label,
-.kitchen-login .field label,
-#adminLoginForm label,
-form.admin-form label {
-  display: block !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
-  color: var(--ice-cyan, #38BDF8) !important;
-  margin-bottom: 8px !important;
-}
-
-/* 4. Make input boxes span 100% width cleanly */
-.admin-login-wrap .field input,
-.kitchen-login .field input,
-#adminLoginForm input,
-form.admin-form input {
-  width: 100% !important;
-  display: block !important;
-  padding: 13px 16px !important;
-  background: rgba(11, 17, 32, 0.75) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  border-radius: 12px !important;
-  color: #FFFFFF !important;
-  font-size: 15px !important;
-  box-sizing: border-box !important;
-}
-
-.admin-login-wrap .field input:focus,
-.kitchen-login .field input:focus,
-#adminLoginForm input:focus {
+.step-card:hover,
+.panel.step-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  background: rgba(15, 23, 42, 0.75) !important;
   border-color: #38BDF8 !important;
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.4), 0 20px 40px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* 5. Center and stretch the Enter Dashboard Button */
-.admin-login-wrap button[type="submit"],
-.kitchen-login button[type="submit"],
-#adminLoginForm button[type="submit"],
-#adminLoginForm .btn {
-  width: 100% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  text-align: center !important;
-  margin: 10px 0 0 0 !important;
-  padding: 14px 20px !important;
-  font-size: 15px !important;
-  border-radius: 12px !important;
-}
-/* ============================================================
-   Edit Food Item Modal Dialog Layout Fix
-   ============================================================ */
-/* 1. Modal Dialog Container */
-.modal,
-.modal-box,
-dialog,
-.edit-modal {
-  width: 100% !important;
-  max-width: 520px !important;
-  padding: 28px !important;
-  border-radius: 20px !important;
-  background: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
-  color: #FFFFFF !important;
-}
-
-/* 2. Modal Form Flex Structure */
-.modal form,
-.modal-box form,
-#editForm,
-#itemForm {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
-  margin-top: 18px !important;
-}
-
-/* 3. Field Rows & Two-Column Split */
-.modal .form-row,
-.modal-box .form-row {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 14px !important;
-  width: 100% !important;
-}
-
-.modal .field,
-.modal-box .field {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  width: 100% !important;
-  margin-bottom: 0 !important;
-}
-
-/* 4. Labels */
-.modal label,
-.modal-box label {
-  display: block !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
-  color: #38BDF8 !important; /* Cyan accent */
-  margin-bottom: 6px !important;
-}
-
-/* 5. Inputs & Textarea */
-.modal input,
-.modal select,
-.modal textarea,
-.modal-box input,
-.modal-box select,
-.modal-box textarea {
-  width: 100% !important;
-  display: block !important;
-  padding: 12px 14px !important;
-  background: rgba(6, 9, 19, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  border-radius: 10px !important;
-  color: #FFFFFF !important;
-  font-family: inherit !important;
-  font-size: 14px !important;
-  box-sizing: border-box !important;
-}
-
-.modal textarea,
-.modal-box textarea {
-  min-height: 70px !important;
-  resize: vertical !important;
-}
-
-/* 6. Modal Action Buttons */
-.modal-actions,
-.modal-buttons,
-.modal .btn-row {
-  display: flex !important;
-  justify-content: flex-end !important;
-  align-items: center !important;
-  gap: 12px !important;
-  margin-top: 10px !important;
-}
-
-.modal-actions button,
-.modal-buttons button {
-  min-width: 110px !important;
-  padding: 10px 18px !important;
-  border-radius: 10px !important;
-  font-weight: 700 !important;
-}
-/* ============================================================
-   Fix Label Overlap & Input Inner Text Padding
-   ============================================================ */
-
-/* 1. Force field container to be a vertical stack */
-.field,
-.form-field,
-.modal-field,
-.admin-wrap .field,
-dialog .field {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 8px !important;
-  width: 100% !important;
-  margin-bottom: 16px !important;
-}
-
-/* 2. Position Label on its own row above the input */
-.field label,
-.form-field label,
-.admin-wrap label,
-dialog label {
-  display: block !important;
-  position: static !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1px !important;
-  color: #38BDF8 !important; /* Nordic Cyan */
-  margin: 0 !important;
-}
-
-/* 3. Generous inner padding so text never touches border edges */
-.field input,
-.field textarea,
-.field select,
-.modal input,
-.modal textarea,
-dialog input,
-dialog textarea {
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding: 12px 18px !important; /* 18px left/right keeps text away from border */
-  font-size: 14px !important;
-  line-height: 1.4 !important;
-  border-radius: 12px !important;
-  color: #FFFFFF !important;
-  background: rgba(11, 17, 32, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-}
-/* ============================================================
-   Kitchen / Admin Stats Cards Horizontal Grid Layout Fix
-   ============================================================ */
-.stats-grid,
-.metrics-grid,
-.admin-stats,
-.stats-row,
-#statsGrid,
-.kpi-grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 16px !important;
-  width: 100% !important;
-  margin: 20px 0 !important;
-}
-
-.stat-card,
-.metric-card,
-.stat-box,
-.panel.stat {
-  width: 100% !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  padding: 18px 20px !important;
-}
-
-/* Responsive adjustments for tablets and mobile */
-@media (max-width: 900px) {
-  .stats-grid,
-  .metrics-grid,
-  .admin-stats,
-  .stats-row,
-  #statsGrid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-@media (max-width: 500px) {
-  .stats-grid,
-  .metrics-grid,
-  .admin-stats,
-  .stats-row,
-  #statsGrid {
+@media (max-width: 860px) {
+  .step-grid,
+  .steps-grid {
     grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 }
+
 /* ============================================================
-   Homepage Food Background (Higher Visibility / Increased Opacity)
+   Homepage Only Background
    ============================================================ */
-body.home-page,
-body:has(.hero-title),
-body:has(.menu-hero) {
+body.home-page {
   background: 
     linear-gradient(
       180deg, 
@@ -1550,157 +769,128 @@ body:has(.menu-hero) {
     url("https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1800&auto=format&fit=crop&q=80") no-repeat center top fixed !important;
   background-size: cover !important;
 }
-/* Direct Button Hover, Scale & Glow Fix */
-a.btn,
-.btn-turmeric,
-.btn-outline {
-  display: inline-block !important;
-  text-decoration: none !important;
-  cursor: pointer !important;
-  transition: all 0.25s ease-in-out !important;
-  transform: scale(1) translateZ(0) !important;
-}
 
-/* 1. Yellow/Turmeric Buttons */
-a.btn-turmeric:hover,
-.btn-turmeric:hover {
-  transform: translateY(-3px) scale(1.06) !important;
-  background-color: #F59E0B !important;
-  border-color: #FBBF24 !important;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.65), 
-              0 8px 20px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* 2. Outline / Student Login Button */
-a.btn-outline.on-dark:hover,
-.btn-outline:hover {
-  transform: translateY(-3px) scale(1.06) !important;
-  background: rgba(56, 189, 248, 0.15) !important;
-  border-color: #38BDF8 !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5), 
-              0 8px 20px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* 3. Click Active State */
-a.btn:active,
-.btn-turmeric:active,
-.btn-outline:active {
-  transform: translateY(-1px) scale(1.02) !important;
-}
-/* ============================================================
-   Step Cards Hover Lift, Border Glow & 3-Column Layout Fix
-   ============================================================ */
-
-/* 1. Reset Grid to 3 Columns */
-.step-grid,
-.steps-grid,
-.steps .grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 24px !important;
-  width: 100% !important;
-  margin-top: 24px !important;
-}
-
-/* 2. Base Step Card Styling & Smooth Transitions */
-.step-card,
-.panel.step-card,
-.steps .panel {
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  padding: 30px 24px !important;
-  border-radius: 18px !important;
-  background: rgba(15, 23, 42, 0.55) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
-  cursor: pointer !important;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-              border-color 0.28s ease,
-              box-shadow 0.28s ease,
-              background 0.28s ease !important;
-  will-change: transform, box-shadow !important;
-}
-
-/* 3. Card Hover: Lifts -8px with Bright Cyan & Amber Glow */
-.step-card:hover,
-.panel.step-card:hover,
-.steps .panel:hover {
-  transform: translateY(-8px) scale(1.02) !important;
-  background: rgba(15, 23, 42, 0.75) !important;
-  border-color: #38BDF8 !important; /* Bright Nordic Cyan Border */
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.4),
-              0 20px 40px rgba(0, 0, 0, 0.65) !important;
-}
-
-/* 4. Glyph animation inside card on hover */
-.step-card:hover .step-glyph {
-  transform: scale(1.18);
-  transition: transform 0.25s ease;
-}
-
-.step-glyph {
-  display: inline-block;
-  font-size: 32px !important;
-  margin-bottom: 16px !important;
-  transition: transform 0.25s ease;
-}
-
-/* 5. Mobile & Tablet Responsiveness */
-@media (max-width: 860px) {
-  .step-grid,
-  .steps-grid,
-  .steps .grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+/* Mobile grid adjustments */
+@media (max-width: 600px) {
+  .menu-grid,
+  #menuGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
   }
 }
 /* ============================================================
-   Teaser Menu Cards Hover Lift, Glow & Image Zoom Effect
+   Comprehensive Mobile Viewport & Horizontal Overflow Fix
    ============================================================ */
 
-/* 1. Base Card Transitions */
-.teaser-card,
-.menu-teaser .panel {
-  position: relative !important;
-  cursor: pointer !important;
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-              border-color 0.28s ease,
-              box-shadow 0.28s ease,
-              background 0.28s ease !important;
-  will-change: transform, box-shadow !important;
-}
-
-/* 2. Image Container & Zoom on Hover */
-.teaser-card div:first-child,
-.teaser-card .teaser-img-wrap {
-  overflow: hidden !important;
-  border-radius: 12px !important;
-}
-
-.teaser-card img {
-  transition: transform 0.35s ease !important;
-  display: block !important;
+/* 1. Prevent root & body from expanding past 100vw */
+html, body {
   width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  position: relative;
+}
+
+/* 2. Contain ambient background glow elements within viewport */
+body::before,
+body::after {
+  max-width: 80vw !important;
+  max-height: 80vw !important;
+  overflow: hidden !important;
+}
+
+/* 3. Adjust mobile container padding and prevent flex overflows */
+@media (max-width: 640px) {
+  .wrap {
+    padding: 0 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Stack Search input and Category dropdown on small screens */
+  .search-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .search-row input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .glass-select-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .glass-select-trigger {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure filter chips wrap cleanly */
+  .filter-row {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Fit 2-column food grid inside screen width without edge spill */
+  .menu-grid,
+  #menuGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .food-card {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+/* ============================================================
+   Global Sticky Footer & Layout Alignment Fix
+   ============================================================ */
+
+/* Force page to fill full viewport height using flex layout */
+html {
   height: 100% !important;
-  object-fit: cover !important;
 }
 
-/* 3. Card Hover State: Lift -8px + Cyan/Amber Neon Glow */
-.teaser-card:hover,
-.menu-teaser .panel:hover {
-  transform: translateY(-8px) scale(1.02) !important;
-  background: rgba(15, 23, 42, 0.8) !important;
-  border-color: #38BDF8 !important; /* Nordic Cyan Border */
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.4),
-              0 20px 40px rgba(0, 0, 0, 0.65) !important;
+body {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
 }
 
-/* Zoom the food image slightly when card is hovered */
-.teaser-card:hover img {
-  transform: scale(1.08) !important;
+/* Allow main content to grow and push footer to the very bottom */
+main,
+main.wrap,
+.menu-main,
+.auth-wrap {
+  flex: 1 0 auto !important;
+}
+
+/* Fix footer positioning and text separation */
+.foot {
+  flex-shrink: 0 !important;
+  margin-top: auto !important;
+  width: 100% !important;
+  background: rgba(6, 9, 19, 0.9) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 16px 0 !important;
+}
+
+.foot .wrap {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px 16px !important;
+  font-size: 12px !important;
+  color: #94A3B8 !important;
 }

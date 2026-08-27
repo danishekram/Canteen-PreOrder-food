@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
 <title>TIFFIN — Campus Canteen, Pre-Ordered</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
@@ -100,7 +100,7 @@
 </footer>
 
 <div id="toast"></div>
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 <style>
   .hero{ padding:64px 0 76px; }
   .hero-inner{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; }
@@ -263,10 +263,21 @@ if (user && container && ticketBox) {
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
+    let refreshing = false;
+
+    // Detect when the new service worker takes over and refresh the app
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('SW registered:', reg))
-        .catch(err => console.error('SW registration failed:', err));
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        // Check for updates on every app launch
+        reg.update();
+      });
     });
   }
 </script>
