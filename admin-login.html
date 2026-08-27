@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Login — TIFFIN Staff</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-shell">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span><div>TIFFIN<small>Kitchen Dashboard</small></div></a>
+    <a href="index.html" class="btn btn-sm btn-outline on-dark">← Back to site</a>
+  </div>
+</nav>
+
+<main class="wrap admin-login-wrap">
+  <div class="admin-login-card panel">
+    <p class="eyebrow">Staff access</p>
+    <h1 class="al-title">Kitchen dashboard</h1>
+    <p class="muted" style="margin-bottom:24px;">Log in to manage the menu and today's orders.</p>
+    <form id="adminLoginForm">
+  <div class="field">
+    <label>Staff email</label>
+    <input type="email" id="adminEmail" placeholder="admin@canteen.com" required>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="adminPass" placeholder="••••••••" required>
+  </div>
+  <button type="submit" class="btn btn-turmeric">Enter dashboard →</button>
+</form>
+    <p class="muted small-note">Demo staff account — <b>admin@canteen.com</b> / <b>admin123</b></p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>TIFFIN — Campus Canteen Pre-Order</span>
+    <span>Staff-only area.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  // Redirect if already logged in as staff
+  if (typeof currentStaff === 'function' && currentStaff()) {
+    window.location.href = 'admin.html';
+  }
+
+  const adminForm = document.getElementById('adminLoginForm') || document.querySelector('form');
+
+  if (adminForm) {
+    adminForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const emailInput = document.getElementById('adminEmail') || adminForm.querySelector('input[type="email"]');
+      const passInput = document.getElementById('adminPass') || adminForm.querySelector('input[type="password"]');
+
+      const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
+      const password = passInput ? passInput.value : '';
+
+      // Fetch users from app.js / localStorage
+      const users = typeof getUsers === 'function' ? getUsers() : JSON.parse(localStorage.getItem('tiffin_users') || '[]');
+      const staff = users.find(u => u.email.toLowerCase() === email && u.role === 'admin');
+
+      if (staff && staff.password === password) {
+        // Save admin session
+        if (typeof setAdminSession === 'function') {
+          setAdminSession(staff.id);
+        } else {
+          localStorage.setItem('tiffin_admin_session', JSON.stringify({ uid: staff.id }));
+        }
+
+        if (typeof toast === 'function') {
+          toast(`Welcome, ${staff.name}!`);
+        } else {
+          alert(`Welcome, ${staff.name}!`);
+        }
+
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 300);
+      } else {
+        if (typeof toast === 'function') {
+          toast('Invalid staff email or password');
+        } else {
+          alert('Invalid staff email or password');
+        }
+      }
+    });
+  }
+</script>
+<!-- Firebase App (Core) and Services -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</body>
+</html>

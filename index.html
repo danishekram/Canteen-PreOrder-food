@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Character Encoding & Viewport -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PWA Manifest & App Theming -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060913">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TIFFIN">
+
+<!-- Standard Browser & Android Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+
+<!-- iOS Safari Home Screen Icons -->
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+<title>TIFFIN — Campus Canteen, Pre-Ordered</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span><div>TIFFIN<small>Campus Canteen</small></div></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="menu.html">Menu</a>
+      <a href="track.html">Track order</a>
+      <a href="orders.html">Order history</a>
+      <a href="login.html">Log in</a>
+      <a href="admin-login.html" style="opacity:.55;font-size:12px;">Staff</a>
+    </div>
+  </div>
+</nav>
+
+<header class="dark-shell hero">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow" style="color:var(--turmeric)">Skip the lunch-rush queue</p>
+      <h1 class="hero-title">Order ahead.<br>Walk in.<br><span style="color:var(--turmeric)">Grab &amp; go.</span></h1>
+      <p class="hero-sub">Browse today's canteen menu, pay nothing extra, pick your pickup slot, and collect with a token number — no standing in line between lectures.</p>
+      <div class="hero-actions">
+        <a href="menu.html" class="btn btn-turmeric">Browse today's menu →</a>
+        <a href="login.html" class="btn btn-outline on-dark">Student login</a>
+      </div>
+      <p class="hero-note">Canteen staff: <a href="admin-login.html" style="text-decoration:underline">open the kitchen dashboard →</a></p>
+    </div>
+
+   <div class="hero-ticket-wrap" id="heroTicketContainer" style="display: none;">
+  <div class="ticket hero-ticket" id="heroLiveTicket"></div>
+</div>
+  </div>
+</header>
+
+<section class="wrap steps">
+  <p class="eyebrow">How it works</p>
+  <h2 class="section-title">Three steps between you and lunch</h2>
+  <div class="grid step-grid">
+    <div class="panel step-card">
+      <div class="step-glyph">🔍</div>
+      <h3>Browse &amp; order</h3>
+      <p class="muted">Search the day's menu, add what you want to your cart, and choose a pickup time that fits your timetable.</p>
+    </div>
+    <div class="panel step-card">
+      <div class="step-glyph">🎟️</div>
+      <h3>Get your token</h3>
+      <p class="muted">The moment you place the order, you get a token number — that's your place in the kitchen queue.</p>
+    </div>
+    <div class="panel step-card">
+      <div class="step-glyph">🥡</div>
+      <h3>Track &amp; collect</h3>
+      <p class="muted">Watch your order move from placed to ready, then walk up to the counter and collect — no waiting in line.</p>
+    </div>
+  </div>
+</section>
+
+<section class="dark-shell menu-teaser">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--turmeric)">On the counter today</p>
+    <h2 class="section-title" style="color:var(--cream)">A taste of the menu</h2>
+    <div class="grid teaser-grid" id="teaserGrid"></div>
+    <div class="center" style="margin-top:28px;">
+      <a href="menu.html" class="btn btn-turmeric">See full menu &amp; order →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>TIFFIN — Campus Canteen Pre-Order</span>
+    <span>Built for the lunch rush.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<style>
+  .hero{ padding:64px 0 76px; }
+  .hero-inner{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center; }
+  .hero-title{ font-family:var(--display); font-size:clamp(38px,5.6vw,64px); line-height:1.04; margin:14px 0 18px; letter-spacing:-0.5px; }
+  .hero-sub{ font-size:17px; line-height:1.6; color:rgba(251,244,228,0.78); max-width:480px; margin-bottom:26px; }
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+  .hero-note{ margin-top:18px; font-family:var(--mono); font-size:12px; color:rgba(251,244,228,0.55); }
+  .hero-ticket-wrap{ display:flex; justify-content:center; }
+  .hero-ticket{ width:100%; max-width:300px; transform:rotate(-3deg); box-shadow:0 24px 50px rgba(0,0,0,0.35); }
+  @media (max-width: 860px){ .hero-inner{ grid-template-columns:1fr; } .hero-ticket-wrap{ order:-1; } .hero-ticket{ max-width:260px; margin:0 auto; } }
+
+  .steps{ padding:70px 0; }
+  .section-title{ font-family:var(--display); font-size:clamp(26px,3.4vw,36px); margin:6px 0 34px; }
+  .step-grid{ grid-template-columns:repeat(3,1fr); }
+  .step-card{ padding:26px; }
+  .step-glyph{ font-size:30px; margin-bottom:14px; }
+  .step-card h3{ font-family:var(--display); font-size:18px; margin:0 0 8px; }
+  @media (max-width:780px){ .step-grid{ grid-template-columns:1fr; } }
+
+  .menu-teaser{ padding:64px 0 76px; }
+  /* Replace .teaser-grid and .teaser-card in index.html */
+.teaser-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  width: 100% !important;
+}
+
+.teaser-card {
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 900px) {
+  .teaser-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .teaser-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+/* ============================================================
+   Forced Button Hover Animation, Scaling & Ambient Glow
+   ============================================================ */
+
+/* 1. Ensure action wrapper allows expanding child elements */
+.hero-actions {
+  display: flex !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+}
+
+/* 2. Base Button Reset to support transforms */
+.hero-actions .btn,
+.hero-actions a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.22s ease, 
+              background-color 0.22s ease, 
+              border-color 0.22s ease !important;
+  backface-visibility: hidden !important;
+  -webkit-font-smoothing: subpixel-antialiased !important;
+  cursor: pointer !important;
+}
+
+/* 3. Amber / Yellow Primary Button Hover (Move + Grow + Neon Glow) */
+.hero-actions .btn-turmeric:hover {
+  transform: translate3d(0, -6px, 0) scale(1.08) !important;
+  background-color: #F59E0B !important;
+  border: 1px solid #FDE68A !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.75), 
+              0 12px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 4. Cyan / Outline Secondary Button Hover (Move + Grow + Cyan Glow) */
+.hero-actions .btn-outline.on-dark:hover,
+.hero-actions .btn-outline:hover {
+  transform: translate3d(0, -6px, 0) scale(1.08) !important;
+  background-color: rgba(56, 189, 248, 0.2) !important;
+  border: 1px solid #38BDF8 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.6), 
+              0 12px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 5. Click Down Effect */
+.hero-actions .btn:active {
+  transform: translate3d(0, -2px, 0) scale(1.02) !important;
+}
+</style>
+<script>
+  document.getElementById('navToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+  seedIfEmpty();
+  const teaser = getMenu().filter(m => m.available).slice(0, 4);
+  document.getElementById('teaserGrid').innerHTML = teaser.map(m => `
+    <div class="teaser-card">
+      <div class="teaser-img-wrap" style="width:100%; height:110px; border-radius:10px; overflow:hidden; margin-bottom:10px; background:rgba(15,23,42,0.6);">
+        <img src="${m.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80'}" alt="${m.name}" style="width:100%; height:100%; object-fit:cover;">
+      </div>
+      <h4>${m.name}</h4>
+      <div class="price">${money(m.price)}</div>
+    </div>`).join('');
+// Render only real, active orders for logged-in students
+const user = currentStudent();
+const container = document.getElementById('heroTicketContainer');
+const ticketBox = document.getElementById('heroLiveTicket');
+
+if (user && container && ticketBox) {
+  // Fetch active orders (not yet picked up / completed)
+  const activeOrders = getOrders().filter(o => o.userId === user.id && o.status !== 'completed');
+  
+  if (activeOrders.length > 0) {
+    const latest = activeOrders[activeOrders.length - 1];
+    
+    ticketBox.innerHTML = `
+      <div class="ticket-label">Your live pickup token</div>
+      <div class="ticket-token">#${latest.token}</div>
+      ${latest.items ? latest.items.map(i => `
+        <div class="ticket-row">
+          <span>${i.name} x${i.qty}</span>
+          <span>${money(i.price * i.qty)}</span>
+        </div>
+      `).join('') : ''}
+      <div class="ticket-row">
+        <span>Pickup slot</span>
+        <span>${latest.slot || 'ASAP'}</span>
+      </div>
+      <div class="ticket-row">
+        <span>Status</span>
+        <span class="status-ready">${STATUS_LABEL[latest.status] || latest.status}</span>
+      </div>
+    `;
+    
+    // Make the box visible only when real active data exists
+    container.style.display = 'flex';
+  }
+}
+</script>
+<!-- Firebase App (Core) and Services -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registered:', reg))
+        .catch(err => console.error('SW registration failed:', err));
+    });
+  }
+</script>
+</body>
+</html>

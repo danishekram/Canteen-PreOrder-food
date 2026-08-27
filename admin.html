@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Dashboard — TIFFIN Staff</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="admin-dashboard.html" class="brand"><span class="dot"></span><div>TIFFIN<small>Kitchen Dashboard</small></div></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <span class="nav-user" id="staffName"></span>
+      <a href="index.html">View site</a>
+      <a href="#" id="logoutLink">Log out</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap admin-header">
+  <p class="eyebrow">Kitchen dashboard</p>
+  <h1 class="page-title">Today's operations</h1>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="incoming">Incoming orders <span class="tab-count" id="countIncoming"></span></button>
+    <button class="tab" data-tab="menu">Menu items</button>
+    <button class="tab" data-tab="completed">Completed orders</button>
+    <button class="tab" data-tab="sales">Sales</button>
+  </div>
+</header>
+
+<main class="wrap admin-main">
+
+  <section id="tab-incoming" class="tab-panel">
+    <div id="incomingList" class="orders-grid"></div>
+  </section>
+
+  <section id="tab-menu" class="tab-panel" style="display:none;">
+    <div class="menu-toolbar">
+      <button class="btn btn-turmeric btn-sm" id="addItemBtn">+ Add food item</button>
+    </div>
+    <div class="panel">
+      <table class="admin-table" id="menuTable">
+        <thead>
+          <tr><th>Item</th><th>Category</th><th>Price</th><th>Type</th><th>Available</th><th></th></tr>
+        </thead>
+        <tbody id="menuTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-completed" class="tab-panel" style="display:none;">
+    <div class="panel">
+      <table class="admin-table">
+        <thead><tr><th>Token</th><th>Student</th><th>Items</th><th>Total</th><th>Placed</th><th>Completed</th></tr></thead>
+        <tbody id="completedTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="tab-sales" class="tab-panel" style="display:none;">
+   <div class="stats-grid">
+  <div class="panel stat-card">
+    <span class="label">ORDERS COMPLETED</span>
+    <div class="val">0</div>
+  </div>
+  <div class="panel stat-card">
+    <span class="label">TOTAL REVENUE</span>
+    <div class="val">₹0</div>
+  </div>
+  <div class="panel stat-card">
+    <span class="label">AVG. ORDER VALUE</span>
+    <div class="val">₹0</div>
+  </div>
+  <div class="panel stat-card">
+    <span class="label">BEST SELLER</span>
+    <div class="val">—</div>
+  </div>
+</div>
+    <div class="panel sales-breakdown">
+      <h3 class="sb-title">Sales by item</h3>
+      <div id="salesBars"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Add/Edit item modal -->
+<div id="itemModal" class="modal-overlay" style="display:none;">
+  <div class="panel modal-card">
+    <h3 id="modalTitle" style="font-family:var(--display); font-size:18px; margin:0 0 18px;">Add food item</h3>
+    <form id="itemForm">
+      <input type="hidden" id="itemId">
+      <div class="field"><label>Name</label><input id="f-name" type="text" required></div>
+      <div class="field-row">
+        <div class="field"><label>Category</label><input id="f-category" type="text" placeholder="e.g. Snacks" required></div>
+        <div class="field"><label>Price (₹)</label><input id="f-price" type="number" min="1" required></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="f-desc" rows="2" required></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Emoji icon</label><input id="f-emoji" type="text" maxlength="4" placeholder="🍛"></div>
+        <div class="field">
+          <label>Type</label>
+          <select id="f-veg"><option value="true">Veg</option><option value="false">Non-veg</option></select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline btn-sm" id="cancelModal">Cancel</button>
+        <button type="submit" class="btn btn-turmeric btn-sm">Save item</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="foot">
+  <div class="wrap"><span>TIFFIN — Kitchen Dashboard</span><span>Staff-only area.</span></div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<style>
+  .admin-header{ padding:36px 0 0; }
+  .page-title{ font-family:var(--display); font-size:clamp(26px,3.6vw,34px); margin:8px 0 24px; }
+  .tabs{ display:flex; gap:6px; border-bottom:1px solid var(--line); overflow-x:auto; }
+  .tab{ background:none; border:none; padding:12px 18px; font-weight:700; font-size:13.5px; color:var(--ink-soft); border-bottom:3px solid transparent; white-space:nowrap; display:flex; gap:6px; align-items:center;}
+  .tab.active{ color:var(--ink); border-color:var(--chili); }
+  .tab-count{ background:var(--chili); color:#fff; font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:999px; min-width:16px; }
+  .tab-count:empty{ display:none; }
+
+  .admin-main{ padding:26px 0 80px; }
+
+  .orders-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
+  .order-ticket{ padding:20px; }
+  .ot-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .ot-token{ font-family:var(--display); font-size:24px; color:var(--chili); }
+  .ot-time{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); text-align:right; }
+  .ot-student{ font-weight:700; font-size:14px; margin-bottom:8px; }
+  .ot-items{ font-size:13px; color:var(--ink-soft); margin-bottom:12px; line-height:1.5; }
+  .ot-bottom{ display:flex; justify-content:space-between; align-items:center; }
+  .ot-total{ font-family:var(--mono); font-weight:700; }
+  .status-select{ padding:8px 10px; border-radius:8px; border:2px solid var(--ink); font-weight:700; font-size:12.5px; }
+
+  .menu-toolbar{ display:flex; justify-content:flex-end; margin-bottom:14px; }
+  .admin-table{ width:100%; border-collapse:collapse; }
+  .admin-table th{ text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); padding:14px 16px; border-bottom:1px solid var(--line); }
+  .admin-table td{ padding:14px 16px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle; }
+  .admin-table tr:last-child td{ border-bottom:none; }
+  .price-input{ width:80px; padding:7px 9px; border:2px solid var(--line); border-radius:8px; font-family:var(--mono); }
+  .toggle-btn{ border:2px solid var(--ink); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700; background:var(--paper); }
+  .toggle-btn.on{ background:var(--mint); color:#fff; border-color:var(--mint); }
+  .toggle-btn.off{ background:var(--line); color:var(--ink-soft); }
+  .row-actions{ display:flex; gap:8px; }
+
+  .sales-cards{ grid-template-columns:repeat(4,1fr); margin-bottom:20px; }
+  @media (max-width:900px){ .sales-cards{ grid-template-columns:repeat(2,1fr); } }
+  .sales-card{ padding:20px; }
+  .sc-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); }
+  .sc-value{ font-family:var(--display); font-size:28px; margin-top:8px; }
+  .sc-value-sm{ font-size:16px; font-family:var(--body); font-weight:700; }
+  .sales-breakdown{ padding:24px; }
+  .sb-title{ font-family:var(--display); font-size:16px; margin:0 0 16px; }
+  .sb-row{ display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:13px; }
+  .sb-name{ width:170px; flex-shrink:0; }
+  .sb-track{ flex:1; background:var(--cream); border-radius:6px; height:10px; overflow:hidden; }
+  .sb-fill{ height:100%; background:var(--turmeric); }
+  .sb-num{ width:60px; text-align:right; font-family:var(--mono); }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(34,32,27,0.55); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
+  .modal-card{ max-width:460px; width:100%; padding:28px; background:var(--paper); }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:6px; }
+</style>
+<script>
+  const staff = requireAdminAuth();
+  if(staff) document.getElementById('staffName').textContent = staff.name;
+  document.getElementById('navToggle').addEventListener('click', ()=> document.getElementById('navLinks').classList.toggle('open'));
+  document.getElementById('logoutLink').addEventListener('click', (e) => { e.preventDefault(); clearAdminSession(); window.location.href='admin-login.html'; });
+
+  /* ---------------- Tabs ---------------- */
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='none');
+      document.getElementById('tab-'+tab.dataset.tab).style.display='block';
+      if(tab.dataset.tab==='sales') drawSales();
+      if(tab.dataset.tab==='completed') drawCompleted();
+    });
+  });
+
+  /* ---------------- Incoming orders ---------------- */
+  function drawIncoming(){
+    const orders = getOrders()
+      .filter(o => o.status !== 'completed')
+      .sort((a,b)=> new Date(a.createdAt) - new Date(b.createdAt));
+    document.getElementById('countIncoming').textContent = orders.length || '';
+    const list = document.getElementById('incomingList');
+
+    if(orders.length === 0){
+      list.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="big">No active orders</div><p>New orders will appear here on the ticket rail as students place them.</p></div>`;
+      return;
+    }
+
+    list.innerHTML = orders.map(o => `
+      <div class="ticket order-ticket">
+        <div class="ot-top">
+          <div class="ot-token">#${o.token}</div>
+          <div class="ot-time">${fmtTime(o.createdAt)}<br>Pickup ${new Date(o.pickupTime).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <div class="ot-student">${o.userName}</div>
+        <div class="ot-items">${o.items.map(i=>`${i.name} ×${i.qty}`).join(', ')}</div>
+        <div class="ot-bottom">
+          <span class="ot-total">${money(o.total)}</span>
+          <select class="status-select" data-id="${o.id}">
+            ${STATUS_FLOW.map(s => `<option value="${s}" ${s===o.status?'selected':''}>${STATUS_LABEL[s]}</option>`).join('')}
+          </select>
+        </div>
+      </div>`).join('');
+
+    list.querySelectorAll('.status-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        const orders = getOrders();
+        const order = orders.find(o=>o.id===sel.dataset.id);
+        order.status = sel.value;
+        if(sel.value === 'completed') order.completedAt = new Date().toISOString();
+        saveOrders(orders);
+        toast(`Token #${order.token} marked "${STATUS_LABEL[sel.value]}"`);
+        drawIncoming();
+      });
+    });
+  }
+
+  /* ---------------- Menu management ---------------- */
+  function drawMenu(){
+    const menu = getMenu();
+    document.getElementById('menuTableBody').innerHTML = menu.map(item => `
+      <tr data-id="${item.id}">
+        <td><b>${item.emoji || '🍽️'} ${item.name}</b></td>
+        <td>${item.category}</td>
+        <td><input class="price-input" type="number" min="1" value="${item.price}" data-action="price"></td>
+        <td>${item.veg ? '<span class="tag tag-veg">Veg</span>' : '<span class="tag tag-nonveg">Non-veg</span>'}</td>
+        <td><button class="toggle-btn ${item.available?'on':'off'}" data-action="toggle">${item.available?'Available':'Unavailable'}</button></td>
+        <td class="row-actions">
+          <button class="btn btn-sm btn-outline" data-action="edit">Edit</button>
+          <button class="btn btn-sm btn-chili" data-action="delete">Delete</button>
+        </td>
+      </tr>`).join('');
+
+    document.querySelectorAll('#menuTableBody tr').forEach(row => {
+      const id = row.dataset.id;
+      row.querySelector('[data-action="price"]').addEventListener('change', (e) => {
+        const menu = getMenu();
+        const item = menu.find(m=>m.id===id);
+        const val = parseFloat(e.target.value);
+        if(!val || val <= 0){ toast('Enter a valid price.'); e.target.value = item.price; return; }
+        item.price = val;
+        saveMenu(menu);
+        toast(`${item.name} price updated to ${money(val)}`);
+      });
+      row.querySelector('[data-action="toggle"]').addEventListener('click', () => {
+        const menu = getMenu();
+        const item = menu.find(m=>m.id===id);
+        item.available = !item.available;
+        saveMenu(menu);
+        toast(`${item.name} marked ${item.available?'available':'unavailable'}`);
+        drawMenu();
+      });
+      row.querySelector('[data-action="edit"]').addEventListener('click', () => openModal(getMenu().find(m=>m.id===id)));
+      row.querySelector('[data-action="delete"]').addEventListener('click', () => {
+        if(!confirm('Remove this item from the menu?')) return;
+        saveMenu(getMenu().filter(m=>m.id!==id));
+        toast('Item removed.');
+        drawMenu();
+      });
+    });
+  }
+
+  /* ---------------- Add / edit modal ---------------- */
+  const modal = document.getElementById('itemModal');
+  function openModal(item){
+    document.getElementById('modalTitle').textContent = item ? 'Edit food item' : 'Add food item';
+    document.getElementById('itemId').value = item ? item.id : '';
+    document.getElementById('f-name').value = item ? item.name : '';
+    document.getElementById('f-category').value = item ? item.category : '';
+    document.getElementById('f-price').value = item ? item.price : '';
+    document.getElementById('f-desc').value = item ? item.desc : '';
+    document.getElementById('f-emoji').value = item ? item.emoji : '🍽️';
+    document.getElementById('f-veg').value = item ? String(item.veg) : 'true';
+    modal.style.display = 'flex';
+  }
+  document.getElementById('addItemBtn').addEventListener('click', () => openModal(null));
+  document.getElementById('cancelModal').addEventListener('click', () => modal.style.display='none');
+  modal.addEventListener('click', (e) => { if(e.target===modal) modal.style.display='none'; });
+
+  document.getElementById('itemForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('itemId').value;
+    const menu = getMenu();
+    const payload = {
+      name: document.getElementById('f-name').value.trim(),
+      category: document.getElementById('f-category').value.trim(),
+      price: parseFloat(document.getElementById('f-price').value),
+      desc: document.getElementById('f-desc').value.trim(),
+      emoji: document.getElementById('f-emoji').value.trim() || '🍽️',
+      veg: document.getElementById('f-veg').value === 'true'
+    };
+    if(id){
+      const item = menu.find(m=>m.id===id);
+      Object.assign(item, payload);
+      toast(`${payload.name} updated.`);
+    } else {
+      menu.push({ id: uid('m'), available:true, ...payload });
+      toast(`${payload.name} added to the menu.`);
+    }
+    saveMenu(menu);
+    modal.style.display = 'none';
+    drawMenu();
+  });
+
+  /* ---------------- Completed orders ---------------- */
+  function drawCompleted(){
+    const orders = getOrders().filter(o=>o.status==='completed').sort((a,b)=> new Date(b.completedAt||b.createdAt) - new Date(a.completedAt||a.createdAt));
+    document.getElementById('completedTableBody').innerHTML = orders.length ? orders.map(o => `
+      <tr>
+        <td><b>#${o.token}</b></td>
+        <td>${o.userName}</td>
+        <td>${o.items.map(i=>`${i.name} ×${i.qty}`).join(', ')}</td>
+        <td>${money(o.total)}</td>
+        <td>${fmtTime(o.createdAt)}</td>
+        <td>${o.completedAt ? fmtTime(o.completedAt) : '—'}</td>
+      </tr>`).join('') : `<tr><td colspan="6" class="muted" style="padding:30px; text-align:center;">No completed orders yet.</td></tr>`;
+  }
+
+  /* ---------------- Sales ---------------- */
+  function drawSales(){
+    const completed = getOrders().filter(o=>o.status==='completed');
+    const revenue = completed.reduce((s,o)=>s+o.total,0);
+    document.getElementById('salesOrders').textContent = completed.length;
+    document.getElementById('salesRevenue').textContent = money(revenue);
+    document.getElementById('salesAvg').textContent = money(completed.length ? revenue/completed.length : 0);
+
+    const itemCounts = {};
+    completed.forEach(o => o.items.forEach(l => { itemCounts[l.name] = (itemCounts[l.name]||0) + l.qty; }));
+    const sorted = Object.entries(itemCounts).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('salesTop').textContent = sorted.length ? sorted[0][0] : '—';
+
+    const max = sorted.length ? sorted[0][1] : 1;
+    document.getElementById('salesBars').innerHTML = sorted.length ? sorted.map(([name,qty]) => `
+      <div class="sb-row">
+        <div class="sb-name">${name}</div>
+        <div class="sb-track"><div class="sb-fill" style="width:${(qty/max*100).toFixed(0)}%"></div></div>
+        <div class="sb-num">${qty} sold</div>
+      </div>`).join('') : `<p class="muted">No sales recorded yet.</p>`;
+  }
+
+  drawIncoming();
+  drawMenu();
+  setInterval(drawIncoming, 5000);
+</script>
+</body>
+</html>

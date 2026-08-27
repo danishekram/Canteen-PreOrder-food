@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Character Encoding & Viewport -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PWA Manifest & App Theming -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060913">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TIFFIN">
+
+<!-- Standard Browser & Android Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+
+<!-- iOS Safari Home Screen Icons -->
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
+<title>Today's Menu — TIFFIN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="dark-shell menu-hero">
+  <div class="wrap">
+    <p class="eyebrow">Today on the counter</p>
+    <h1 class="menu-hero-title">What are we eating?</h1>
+    <div class="search-row">
+      <input id="searchInput" type="text" placeholder="Search for dosa, chai, sandwich…" autocomplete="off">
+      
+      <!-- Custom Glassmorphic Select -->
+      <div class="glass-select-wrapper" id="customCategoryWrapper">
+        <button type="button" class="glass-select-trigger" id="categoryTrigger">
+          <span id="selectedCategoryLabel">All categories</span>
+          <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="glass-dropdown-menu" id="customCategoryMenu"></div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <button class="chip active" data-veg="all">All</button>
+      <button class="chip" data-veg="veg">🟢 Veg only</button>
+      <button class="chip" data-veg="nonveg">🔴 Non-veg</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap menu-main">
+  <div id="menuGrid" class="menu-grid"></div>
+  <div id="emptyState" class="empty-state" style="display:none;">
+    <div class="big">Nothing matches that search</div>
+    <p>Try a different dish or clear your filters.</p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>TIFFIN — Campus Canteen Pre-Order</span>
+    <span>Menu refreshes daily by the kitchen team.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(err => {
+    console.log('SW registration skipped:', err);
+  });
+}
+</script>
+
+<style>
+  .menu-hero { padding: 40px 0 30px; }
+  .menu-hero-title { font-family: var(--display); font-size: clamp(28px, 4vw, 42px); margin: 10px 0 22px; }
+  .search-row { display: flex; gap: 12px; }
+  .search-row input { flex: 1; padding: 15px 18px; border-radius: 12px; font-size: 15px; }
+  .filter-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .chip { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); color: var(--ink-soft); padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .chip.active { background: rgba(56, 189, 248, 0.18); border-color: var(--ice-cyan); color: #fff; box-shadow: 0 0 12px rgba(56, 189, 248, 0.3); }
+
+  .menu-main { padding: 38px 0 70px; }
+
+  /* --- Multi-Column Grid Fix --- */
+  .menu-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
+
+  .food-card {
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    position: relative;
+    border-radius: 16px !important;
+  }
+  .food-card.unavailable { opacity: 0.55; }
+  .food-img-wrap { position: relative; width: 100%; height: 140px; border-radius: 12px; overflow: hidden; background: rgba(15,23,42,0.6); }
+  .food-img { width: 100%; height: 100%; object-fit: cover; }
+  .card-badge { position: absolute; top: 8px; left: 8px; font-size: 10px !important; padding: 3px 8px !important; }
+  .unavailable-ribbon { position: absolute; top: 8px; right: 8px; font-size: 10px !important; padding: 3px 8px !important; }
+  .food-content { display: flex; flex-direction: column; flex: 1; padding: 8px 0; }
+  .food-name { font-family: var(--display); font-size: 15px; font-weight: 700; margin: 2px 0 4px; color: #fff; }
+  .food-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .food-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .food-price { font-family: var(--mono); font-weight: 800; font-size: 16px; color: #fff; }
+  .qty-row { display: flex; align-items: center; gap: 8px; }
+  .qty-btn { width: 28px; height: 28px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  .qty-val { font-family: var(--mono); font-weight: 700; min-width: 16px; text-align: center; }
+
+  @media (max-width: 600px) {
+    .menu-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+    }
+    .food-img-wrap { height: 110px; }
+  }
+</style>
+
+<script>
+  renderNav('menu');
+  
+  // Guest-friendly session (no forced login kick)
+  const student = currentStudent();
+  const currentUid = student ? student.id : 'guest';
+
+  const menu = getMenu();
+  let filters = { q: '', category: 'all', veg: 'all' };
+
+  // Custom Glassmorphic Category Dropdown
+  const cats = ['all', ...Array.from(new Set(menu.map(m => m.category)))];
+  const trigger = document.getElementById('categoryTrigger');
+  const menuList = document.getElementById('customCategoryMenu');
+  const wrapper = document.getElementById('customCategoryWrapper');
+  const label = document.getElementById('selectedCategoryLabel');
+
+  menuList.innerHTML = cats.map(c => `
+    <div class="glass-option ${c === filters.category ? 'selected' : ''}" data-cat="${c}">
+      ${c === 'all' ? 'All categories' : c}
+    </div>
+  `).join('');
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    wrapper.classList.toggle('open');
+  });
+
+  menuList.querySelectorAll('.glass-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      filters.category = opt.dataset.cat;
+      label.textContent = opt.dataset.cat === 'all' ? 'All categories' : opt.dataset.cat;
+      menuList.querySelectorAll('.glass-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      wrapper.classList.remove('open');
+      draw();
+    });
+  });
+
+  document.addEventListener('click', () => wrapper.classList.remove('open'));
+
+  document.getElementById('searchInput').addEventListener('input', e => { 
+    filters.q = e.target.value.toLowerCase().trim(); 
+    draw(); 
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filters.veg = chip.dataset.veg;
+      draw();
+    });
+  });
+
+  function matches(item){
+    if(filters.category !== 'all' && item.category !== filters.category) return false;
+    if(filters.veg === 'veg' && !item.veg) return false;
+    if(filters.veg === 'nonveg' && item.veg) return false;
+    if(filters.q && !item.name.toLowerCase().includes(filters.q) && !item.desc.toLowerCase().includes(filters.q)) return false;
+    return true;
+  }
+
+  function qtyInCart(itemId){
+    const cart = getCart(currentUid);
+    const line = cart.find(l => l.id === itemId);
+    return line ? line.qty : 0;
+  }
+
+  function changeQty(itemId, delta){
+    const item = menu.find(m => m.id === itemId);
+    if(!item || !item.available) return;
+    let cart = getCart(currentUid);
+    let line = cart.find(l => l.id === itemId);
+    if(!line && delta > 0){
+      cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+    } else if(line){
+      line.qty += delta;
+      if(line.qty <= 0) cart = cart.filter(l => l.id !== itemId);
+    }
+    saveCart(currentUid, cart);
+    renderNav('menu');
+    draw();
+    if(delta > 0) toast(`Added ${item.name} to cart`);
+  }
+
+  function draw(){
+    const list = menu.filter(matches);
+    const grid = document.getElementById('menuGrid');
+    document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+    
+    grid.innerHTML = list.map(item => {
+      const q = qtyInCart(item.id);
+      const fallbackImg = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80';
+      
+      return `
+      <div class="panel food-card ${item.available ? '' : 'unavailable'}">
+        <div class="food-img-wrap">
+          <img class="food-img" src="${item.img || fallbackImg}" alt="${item.name}" loading="lazy">
+          <span class="tag ${item.veg ? 'tag-veg' : 'tag-nonveg'} card-badge">${item.veg ? '● Veg' : '● Non-veg'}</span>
+          ${!item.available ? `<span class="tag tag-out unavailable-ribbon">Sold out</span>` : ''}
+        </div>
+        <div class="food-content">
+          <div class="food-name">${item.name}</div>
+          <div class="food-desc">${item.desc}</div>
+        </div>
+        <div class="food-bottom">
+          <span class="food-price">${money(item.price)}</span>
+          ${item.available ? (
+            q > 0
+            ? `<div class="qty-row">
+                 <button class="qty-btn" data-action="dec" data-id="${item.id}">–</button>
+                 <span class="qty-val">${q}</span>
+                 <button class="qty-btn" data-action="inc" data-id="${item.id}">+</button>
+               </div>`
+            : `<button class="btn btn-sm btn-turmeric" data-action="inc" data-id="${item.id}">Add +</button>`
+          ) : `<span class="muted" style="font-size:12px;">Unavailable</span>`}
+        </div>
+      </div>`;
+    }).join('');
+
+    grid.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => changeQty(btn.dataset.id, btn.dataset.action === 'inc' ? 1 : -1));
+    });
+  }
+
+  draw();
+</script>
+</body>
+</html>

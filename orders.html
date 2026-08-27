@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order History — TIFFIN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main class="wrap oh-wrap">
+  <p class="eyebrow">Your history</p>
+  <h1 class="page-title">Previous orders</h1>
+  <div id="ordersList"></div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>TIFFIN — Campus Canteen Pre-Order</span>
+    <span>Loved something? Reorder it in one tap.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<style>
+  .oh-wrap{ padding:44px 0 80px; }
+  .page-title{ font-family:var(--display); font-size:clamp(28px,4vw,38px); margin:8px 0 30px; }
+  .order-card{ padding:22px 24px; margin-bottom:16px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .order-token{ font-family:var(--mono); font-weight:700; font-size:20px; color:var(--chili); min-width:74px; }
+  .order-meta{ flex:1; min-width:200px; }
+  .order-items-line{ font-size:14px; font-weight:600; }
+  .order-sub{ font-size:12.5px; color:var(--ink-soft); margin-top:3px; }
+  .order-total{ font-family:var(--mono); font-weight:700; font-size:15px; }
+</style>
+<script>
+  renderNav('orders');
+  const student = requireStudentAuth();
+
+  function draw(){
+    const orders = getOrders().filter(o=>o.uid===student.id).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+    const list = document.getElementById('ordersList');
+
+    if(orders.length === 0){
+      list.innerHTML = `
+        <div class="panel empty-state">
+          <div class="big">No orders yet</div>
+          <p>Your placed orders will show up here.</p>
+          <a href="menu.html" class="btn btn-turmeric" style="margin-top:16px;">Browse menu →</a>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = orders.map(o => `
+      <div class="panel order-card">
+        <div class="order-token">#${o.token}</div>
+        <div class="order-meta">
+          <div class="order-items-line">${o.items.map(i=>`${i.name} ×${i.qty}`).join(', ')}</div>
+          <div class="order-sub">Placed ${fmtTime(o.createdAt)} · Pickup ${new Date(o.pickupTime).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <span class="tag ${o.status==='completed' ? 'tag-out' : 'tag-status'}" style="text-transform:capitalize;">${STATUS_LABEL[o.status]}</span>
+        <div class="order-total">${money(o.total)}</div>
+        <button class="btn btn-sm btn-outline" data-reorder="${o.id}">Reorder</button>
+        ${o.status !== 'completed' ? `<a href="track.html?order=${o.id}" class="btn btn-sm btn-turmeric">Track</a>` : ''}
+      </div>`).join('');
+
+    list.querySelectorAll('[data-reorder]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const order = orders.find(o=>o.id===btn.dataset.reorder);
+        const menu = getMenu();
+        let cart = getCart(student.id);
+        order.items.forEach(line => {
+          const item = menu.find(m=>m.id===line.id);
+          if(!item || !item.available) return;
+          const existing = cart.find(l=>l.id===line.id);
+          if(existing) existing.qty += line.qty;
+          else cart.push({ id:line.id, name:line.name, price:item.price, qty:line.qty });
+        });
+        saveCart(student.id, cart);
+        renderNav('orders');
+        toast('Added to cart from your previous order.');
+      });
+    });
+  }
+
+  draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — TIFFIN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="nav-root"></div>
+
+<main class="wrap cart-wrap">
+  <p class="eyebrow">Step 2 of 2</p>
+  <h1 class="page-title">Your cart</h1>
+
+  <div id="cartLayout" class="cart-layout"></div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>TIFFIN — Campus Canteen Pre-Order</span>
+    <span>Payment is collected at the counter on pickup.</span>
+  </div>
+</footer>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<style>
+  .cart-wrap{ padding:44px 0 80px; }
+  .page-title{ font-family:var(--display); font-size:clamp(28px,4vw,38px); margin:8px 0 30px; }
+  .cart-layout{ display:grid; grid-template-columns:1.4fr 1fr; gap:28px; align-items:start; }
+  @media (max-width:880px){ .cart-layout{ grid-template-columns:1fr; } }
+
+  .cart-line{ display:flex; align-items:center; gap:14px; padding:16px 20px; border-bottom:1px solid var(--line); }
+  .cart-line:last-child{ border-bottom:none; }
+  .cart-line-name{ font-weight:700; flex:1; }
+  .cart-line-price{ font-family:var(--mono); color:var(--ink-soft); font-size:13px; }
+  .qty-row{ display:flex; align-items:center; gap:10px; }
+  .qty-btn{ width:28px; height:28px; border-radius:8px; border:2px solid var(--ink); background:var(--paper); font-weight:700; }
+  .qty-val{ font-family:var(--mono); font-weight:700; min-width:14px; text-align:center; }
+  .line-total{ font-family:var(--mono); font-weight:700; width:58px; text-align:right; }
+  .remove-btn{ background:none; border:none; color:var(--chili); font-size:12px; font-weight:700; }
+
+  .summary-panel{ padding:26px; position:sticky; top:96px; }
+  .summary-row{ display:flex; justify-content:space-between; font-size:14px; padding:8px 0; }
+  .summary-row.total{ font-weight:700; font-size:17px; border-top:1px solid var(--line); margin-top:8px; padding-top:14px; }
+  .slot-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
+  .slot-btn{ border:2px solid var(--line); background:var(--paper); border-radius:8px; padding:9px 6px; font-family:var(--mono); font-size:12.5px; font-weight:700; }
+  .slot-btn.active{ background:var(--ink); border-color:var(--ink); color:var(--cream); }
+  .slot-btn:disabled{ opacity:0.35; text-decoration:line-through; }
+</style>
+<script>
+  renderNav('cart');
+  
+  // 1. Allow guest viewing — do NOT kick them out immediately
+  const student = currentStudent();
+  const currentUid = student ? student.id : 'guest';
+
+  function buildSlots(){
+    const slots = [];
+    const now = new Date();
+    let start = new Date(now.getTime() + 15*60000);
+    start.setMinutes(Math.ceil(start.getMinutes()/10)*10, 0, 0);
+    for(let i=0;i<9;i++){
+      const t = new Date(start.getTime() + i*10*60000);
+      slots.push(t);
+    }
+    return slots;
+  }
+
+  function renderCart(){
+    const cart = getCart(currentUid);
+    const menu = getMenu();
+    const layout = document.getElementById('cartLayout');
+
+    if(cart.length === 0){
+      layout.innerHTML = `
+        <div class="panel empty-state" style="grid-column:1/-1;">
+          <div class="big">Your cart is empty</div>
+          <p>Add something tasty from today's menu.</p>
+          <a href="menu.html" class="btn btn-turmeric" style="margin-top:16px;">Browse menu →</a>
+        </div>`;
+      return;
+    }
+
+    const subtotal = cart.reduce((s,l)=> s + l.price*l.qty, 0);
+    const slots = buildSlots();
+
+    layout.innerHTML = `
+      <div class="panel" id="linesPanel"></div>
+      <div class="panel summary-panel">
+        <h3 style="font-family:var(--display); font-size:16px; margin:0 0 16px;">Order summary</h3>
+        <div class="summary-row"><span>Items (${cart.reduce((s,l)=>s+l.qty,0)})</span><span>${money(subtotal)}</span></div>
+        <div class="summary-row"><span>Service fee</span><span>₹0</span></div>
+        <div class="summary-row total"><span>Total (pay at counter)</span><span>${money(subtotal)}</span></div>
+        <hr class="hr">
+        <label style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft);">Pickup time</label>
+        <div class="slot-grid" id="slotGrid">
+          ${slots.map((t,i) => `<button class="slot-btn ${i===0?'active':''}" data-idx="${i}">${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</button>`).join('')}
+        </div>
+        <button class="btn btn-turmeric btn-block" id="placeOrderBtn" style="margin-top:20px;">
+          ${student ? 'Place order →' : 'Log in to Place Order →'}
+        </button>
+      </div>`;
+
+    const linesPanel = document.getElementById('linesPanel');
+    linesPanel.innerHTML = cart.map(l => `
+      <div class="cart-line" data-id="${l.id}">
+        <div style="flex:1;">
+          <div class="cart-line-name">${l.name}</div>
+          <div class="cart-line-price">${money(l.price)} each</div>
+        </div>
+        <div class="qty-row">
+          <button class="qty-btn" data-action="dec">–</button>
+          <span class="qty-val">${l.qty}</span>
+          <button class="qty-btn" data-action="inc">+</button>
+        </div>
+        <div class="line-total">${money(l.price*l.qty)}</div>
+        <button class="remove-btn" data-action="remove">Remove</button>
+      </div>`).join('');
+
+    linesPanel.querySelectorAll('.cart-line').forEach(row => {
+      const id = row.dataset.id;
+      row.querySelector('[data-action="dec"]').addEventListener('click', () => updateLine(id, -1));
+      row.querySelector('[data-action="inc"]').addEventListener('click', () => updateLine(id, 1));
+      row.querySelector('[data-action="remove"]').addEventListener('click', () => updateLine(id, -9999));
+    });
+
+    let selectedSlotIdx = 0;
+    document.querySelectorAll('.slot-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedSlotIdx = parseInt(btn.dataset.idx,10);
+      });
+    });
+
+    // 2. Mandatory Login Verification on Ordering
+    document.getElementById('placeOrderBtn').addEventListener('click', () => {
+      const activeStudent = currentStudent();
+      
+      if (!activeStudent) {
+        toast('Please log in first to place your order');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 600);
+        return;
+      }
+
+      const currentCart = getCart(activeStudent.id);
+      if(currentCart.length === 0){ toast('Your cart is empty.'); return; }
+      
+      const pickupTime = slots[selectedSlotIdx];
+      const total = currentCart.reduce((s,l)=> s + l.price*l.qty, 0);
+      const orders = getOrders();
+      const token = nextToken();
+      const order = {
+        id: uid('o'),
+        token,
+        uid: activeStudent.id,
+        userName: activeStudent.name,
+        items: currentCart,
+        total,
+        pickupTime: pickupTime.toISOString(),
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      orders.push(order);
+      saveOrders(orders);
+      saveCart(activeStudent.id, []);
+      window.location.href = `track.html?order=${order.id}`;
+    });
+  }
+
+  function updateLine(itemId, delta){
+    let cart = getCart(currentUid);
+    const line = cart.find(l=>l.id===itemId);
+    if(!line) return;
+    if(delta === -9999){
+      cart = cart.filter(l=>l.id!==itemId);
+    } else {
+      line.qty += delta;
+      if(line.qty <= 0) cart = cart.filter(l=>l.id!==itemId);
+    }
+    saveCart(currentUid, cart);
+    renderNav('cart');
+    renderCart();
+  }
+
+  renderCart();
+</script>
+</body>
+</html>
