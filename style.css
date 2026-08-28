@@ -894,3 +894,618 @@ main.wrap,
   font-size: 12px !important;
   color: #94A3B8 !important;
 }
+/* ============================================================
+   Cyberpunk / RGB-Split Glitch Effect on Hover
+   ============================================================ */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* Pseudo-elements for the Cyan & Magenta RGB split */
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Trigger glitch animation on hover */
+.glitch-text:hover::before {
+  opacity: 1;
+  color: #00ffff; /* Cyan offset */
+  z-index: -1;
+  text-shadow: -2px 0 #00ffff;
+  animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
+}
+
+.glitch-text:hover::after {
+  opacity: 1;
+  color: #ff00ff; /* Magenta / Neon Pink offset */
+  z-index: -2;
+  text-shadow: 2px 0 #ff00ff;
+  animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+}
+
+.glitch-text:hover {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+               -2px 0 #00ffff,
+                2px 0 #ff00ff;
+}
+
+/* Clip-path glitch slice animations */
+@keyframes glitch-anim-1 {
+  0% {
+    clip-path: inset(20% 0 60% 0);
+    transform: translate(-3px, -1px);
+  }
+  20% {
+    clip-path: inset(60% 0 10% 0);
+    transform: translate(3px, 2px);
+  }
+  40% {
+    clip-path: inset(40% 0 40% 0);
+    transform: translate(-2px, 1px);
+  }
+  60% {
+    clip-path: inset(80% 0 5% 0);
+    transform: translate(2px, -2px);
+  }
+  80% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translate(-1px, 2px);
+  }
+  100% {
+    clip-path: inset(30% 0 50% 0);
+    transform: translate(3px, -1px);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip-path: inset(10% 0 80% 0);
+    transform: translate(3px, 1px);
+  }
+  25% {
+    clip-path: inset(70% 0 15% 0);
+    transform: translate(-3px, -2px);
+  }
+  50% {
+    clip-path: inset(30% 0 50% 0);
+    transform: translate(2px, 2px);
+  }
+  75% {
+    clip-path: inset(50% 0 30% 0);
+    transform: translate(-2px, -1px);
+  }
+  100% {
+    clip-path: inset(5% 0 85% 0);
+    transform: translate(1px, 2px);
+  }
+}
+/* ============================================================
+   Option 1: Kitchen Pass & Steam Cloche Intro Styles
+   ============================================================ */
+.intro-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: #060913 !important;
+  z-index: 999999999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 40px 20px 60px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* Overhead Spotlight Beam */
+.intro-spotlight {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 480px;
+  background: radial-gradient(ellipse at top, rgba(245, 158, 11, 0.28) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 80%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* Center Stage Content */
+.intro-center {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Animated Steam Trails */
+.steam-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  height: 40px;
+  margin-bottom: -6px;
+}
+
+.steam-particle {
+  width: 6px;
+  height: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), transparent);
+  border-radius: 999px;
+  filter: blur(3px);
+  animation: steamRise 2s infinite ease-in-out;
+}
+
+.steam-particle.s1 { animation-delay: 0.1s; }
+.steam-particle.s2 { animation-delay: 0.6s; }
+.steam-particle.s3 { animation-delay: 1.1s; }
+
+@keyframes steamRise {
+  0% { transform: translateY(12px) scaleX(1); opacity: 0; }
+  50% { opacity: 0.8; transform: translateY(-6px) scaleX(1.4); }
+  100% { transform: translateY(-24px) scaleX(2); opacity: 0; }
+}
+
+/* Cloche Geometric Badge */
+.cloche-badge {
+  width: 170px;
+  height: 170px;
+  border-radius: 28px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: badgeFloat 3s infinite ease-in-out alternate;
+}
+
+@keyframes badgeFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+.cloche-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+
+.cloche-icon {
+  width: 54px;
+  height: 54px;
+  stroke: #F59E0B;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+  margin-bottom: 8px;
+}
+
+.cloche-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+}
+
+.cloche-sub {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 1.8px;
+  color: #38BDF8;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.intro-tagline {
+  margin-top: 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+/* Bottom Progress Loader */
+.intro-loader {
+  width: 100%;
+  max-width: 320px;
+  z-index: 2;
+}
+
+.intro-status-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94A3B8;
+  font-family: var(--mono);
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.intro-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.intro-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #F59E0B, #38BDF8);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+/* ============================================================
+   Overhead Lamp & Dual-Axis 360 Flip Animation
+   ============================================================ */
+
+/* 1. Hanging Lamp Structure */
+.lamp-fixture {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.lamp-cord {
+  width: 3px;
+  height: 48px;
+  background: linear-gradient(180deg, #1e293b, #475569);
+}
+
+.lamp-shade {
+  width: 58px;
+  height: 24px;
+  background: linear-gradient(180deg, #334155, #0f172a);
+  border-radius: 20px 20px 4px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.lamp-bulb {
+  width: 18px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50% 50% 4px 4px;
+  box-shadow: 0 0 25px #F59E0B, 0 0 50px #F59E0B;
+  animation: bulbFlickerOn 0.6s ease-out forwards;
+}
+
+/* 2. Emitted Cone Light Beam */
+.lamp-light-cone {
+  width: 380px;
+  height: 520px;
+  background: radial-gradient(ellipse at top, rgba(245, 158, 11, 0.35) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 75%);
+  clip-path: polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%);
+  filter: blur(14px);
+  margin-top: -2px;
+  opacity: 0;
+  animation: lightBeamEmit 0.8s 0.3s ease-out forwards;
+}
+
+@keyframes bulbFlickerOn {
+  0% { opacity: 0.2; }
+  30% { opacity: 0.9; }
+  50% { opacity: 0.4; }
+  80% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes lightBeamEmit {
+  0% { opacity: 0; transform: scaleY(0.4); }
+  60% { opacity: 0.7; }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+
+/* 3. 3D Burger Perspective & 360 Flip */
+.burger-3d-scene {
+  width: 86px;
+  height: 86px;
+  margin-bottom: 8px;
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipping-burger {
+  width: 82px;
+  height: 82px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #F59E0B;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(245, 158, 11, 0.5);
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  /* Flips 360 frontwards then 360 backwards */
+  animation: burgerFrontBackFlip 4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  animation-delay: 0.5s;
+  will-change: transform;
+}
+
+@keyframes burgerFrontBackFlip {
+  0% {
+    transform: rotateX(0deg) scale(1);
+  }
+  /* 360° Frontward Somersault */
+  40% {
+    transform: rotateX(360deg) scale(1.08);
+  }
+  50% {
+    transform: rotateX(360deg) scale(1);
+  }
+  /* 360° Reverse Backward Somersault */
+  90% {
+    transform: rotateX(0deg) scale(1.08);
+  }
+  100% {
+    transform: rotateX(0deg) scale(1);
+  }
+}
+/* ============================================================
+   Real 3D WebGL Burger Canvas Styles
+   ============================================================ */
+.burger-3d-canvas-wrap {
+  width: 110px;
+  height: 95px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.burger-3d-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 15px rgba(245, 158, 11, 0.45));
+}
+/* ============================================================
+   Borderless Floating 3D Burger Stage & Typography
+   ============================================================ */
+.burger-floating-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0;
+  margin: 0;
+}
+
+.burger-canvas-stage {
+  width: 220px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(245, 158, 11, 0.4));
+}
+
+.intro-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.intro-brand-text .cloche-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: #FFFFFF;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.intro-brand-text .cloche-sub {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 2.5px;
+  color: #38BDF8;
+  font-weight: 700;
+  margin-top: 4px;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+/* ============================================================
+   Hanging Ticket Board with Wall Nail & Dual Suspension Threads
+   ============================================================ */
+.hero-ticket-wrap {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.hanging-board-rig {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+  /* Natural pendulum sway animation on the nail fulcrum */
+  transform-origin: 50% 0%;
+  animation: hangingPendulumSway 5.5s infinite ease-in-out alternate;
+}
+
+/* 1. Metal Wall Nail (Kill) */
+.hanging-nail {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 35% 35%, #e2e8f0 0%, #64748b 60%, #1e293b 100%);
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nail-head {
+  width: 6px;
+  height: 6px;
+  background: #0f172a;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+/* 2. SVG Thread Rig */
+.hanging-threads-svg {
+  width: 100%;
+  height: 60px;
+  margin-top: -8px;
+  margin-bottom: -4px;
+  overflow: visible;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.thread-line {
+  stroke: rgba(251, 191, 36, 0.85); /* Warm Honey Cord */
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+}
+
+.eyelet-ring {
+  fill: #1e293b;
+  stroke: #F59E0B;
+  stroke-width: 2;
+}
+
+/* 3. Ticket Card Adjustments */
+.hero-ticket.hanging-card {
+  width: 100% !important;
+  max-width: 320px !important;
+  padding: 24px 22px !important;
+  border-radius: 20px !important;
+  background: rgba(15, 23, 42, 0.82) !important;
+  backdrop-filter: blur(24px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 24px 45px rgba(0, 0, 0, 0.75), 
+              0 0 25px rgba(245, 158, 11, 0.12),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  transform: none !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.hanging-board-rig:hover {
+  animation-play-state: paused;
+}
+
+.hanging-board-rig:hover .hanging-card {
+  transform: scale(1.03) translateY(2px) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85), 
+              0 0 30px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* 4. Natural Physics Swing Keyframes */
+@keyframes hangingPendulumSway {
+  0% {
+    transform: rotate(-2.8deg);
+  }
+  50% {
+    transform: rotate(2.4deg);
+  }
+  100% {
+    transform: rotate(-2.8deg);
+  }
+}
+/* ============================================================
+   Apple-Style Translucent Frosted Glass Navbar
+   ============================================================ */
+
+/* Hide desktop hamburger button on wide screens */
+@media (min-width: 769px) {
+  .nav-toggle {
+    display: none !important;
+  }
+}
+
+/* Mobile dropdown inherits the frosted styling */
+@media (max-width: 768px) {
+  .nav-links {
+    background: rgba(13, 19, 34, 0.88) !important;
+    backdrop-filter: blur(24px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+}
+/* ============================================================
+   Ultra-Translucent Apple Frosted Glass Navbar
+   ============================================================ */
+/* Fixed sticky ultra-translucent navbar on scroll */
+#nav-root {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+}
+
+.nav {
+  position: relative !important;
+  width: 100% !important;
+  background: rgba(6, 9, 19, 0.22) !important;
+  backdrop-filter: blur(28px) saturate(210%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Offset top so fixed navbar does not overlap hero section */
+body.home-page {
+  padding-top: 68px !important;
+}
+
+.nav-inner {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 24px !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+}

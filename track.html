@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Track Order — TIFFIN</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=17">
 <style>
   html, body {
     height: 100% !important;
@@ -64,6 +64,17 @@
   .order-pick { border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(15, 23, 42, 0.6); padding: 8px 14px; border-radius: 999px; font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff; cursor: pointer; }
   .order-pick.active { background: var(--ice-cyan); border-color: var(--ice-cyan); color: #000; }
 
+  .cancel-banner {
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(251, 113, 133, 0.15);
+    border: 1px solid rgba(251, 113, 133, 0.3);
+    color: var(--chili);
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
   .foot {
     flex-shrink: 0 !important;
     margin-top: auto !important;
@@ -116,6 +127,21 @@
       .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
   }
 
+  function cancelStudentOrder(orderId){
+    if(!confirm('Are you sure you want to cancel this order?')) return;
+    
+    let orders = getOrders();
+    const order = orders.find(o => o.id === orderId);
+    if(order && (order.status === 'pending' || order.status === 'accepted')){
+      order.status = 'cancelled';
+      saveOrders(orders);
+      toast(`Token #${order.token} cancelled.`);
+      draw();
+    } else {
+      toast('Cannot cancel: Kitchen has already started preparing food.');
+    }
+  }
+
   function draw(){
     const orders = activeOrders();
     const content = document.getElementById('trackContent');
@@ -140,6 +166,9 @@
         ${orders.map(o => `<button class="order-pick ${o.id===selectedOrderId?'active':''}" data-id="${o.id}">Token #${o.token}</button>`).join('')}
       </div>` : '';
 
+    const isTerminated = order.status === 'cancelled' || order.status === 'rejected';
+    const canCancel = order.status === 'pending' || order.status === 'accepted';
+
     const stepIdx = STATUS_FLOW.indexOf(order.status);
     const steps = [
       { key:'pending', title:'Order placed', sub:`Placed at ${fmtTime(order.createdAt)}` },
@@ -151,16 +180,23 @@
 
     content.innerHTML = `
       ${picker}
+      ${order.status === 'cancelled' ? `<div class="cancel-banner">✕ This order was cancelled by you.</div>` : ''}
+      ${order.status === 'rejected' ? `<div class="cancel-banner">✕ This order was declined by the kitchen (Items may be unavailable).</div>` : ''}
+      
       <div class="track-layout">
         <div class="panel timeline">
-          ${steps.map((s,i) => `
-            <div class="tl-item ${i < stepIdx ? 'done' : i === stepIdx ? 'current' : ''}">
-              <div class="tl-dot">${i < stepIdx ? '✓' : ''}</div>
-              <div>
-                <div class="tl-title">${s.title}</div>
-                <div class="tl-sub">${s.sub}</div>
-              </div>
-            </div>`).join('')}
+          ${isTerminated ? `
+            <div style="color:var(--ink-soft); font-size:14px; text-align:center; padding:20px 0;">
+              Order is no longer active.
+            </div>` : 
+            steps.map((s,i) => `
+              <div class="tl-item ${i < stepIdx ? 'done' : i === stepIdx ? 'current' : ''}">
+                <div class="tl-dot">${i < stepIdx ? '✓' : ''}</div>
+                <div>
+                  <div class="tl-title">${s.title}</div>
+                  <div class="tl-sub">${s.sub}</div>
+                </div>
+              </div>`).join('')}
         </div>
         <div class="ticket track-ticket">
           <div class="ticket-label">Your token</div>
@@ -171,6 +207,11 @@
           <div class="track-order-items">
             ${order.items.map(l => `<div class="order-item-row"><span>${l.name} ×${l.qty}</span><span>${money(l.price*l.qty)}</span></div>`).join('')}
           </div>
+          
+          ${canCancel ? `
+            <button type="button" class="btn btn-outline" style="width:100%; margin-top:16px; color:var(--chili); border-color:var(--chili);" onclick="cancelStudentOrder('${order.id}')">
+              Cancel Order
+            </button>` : ''}
         </div>
       </div>`;
 

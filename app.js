@@ -1,5 +1,3 @@
-
-
 /* ============================================================
    TIFFIN — Real Firebase Authentication & Firestore DB
    ============================================================ */
@@ -329,8 +327,19 @@ function fmtTime(iso){
   const d = new Date(iso);
   return d.toLocaleString(undefined, { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' });
 }
-const STATUS_FLOW = ['pending','accepted','preparing','ready','completed'];
-const STATUS_LABEL = { pending:'Order placed', accepted:'Accepted by canteen', preparing:'Being prepared', ready:'Ready for pickup', completed:'Picked up' };
+
+/* Updated Status Flow & Labels for Cancel/Reject Support */
+const STATUS_FLOW = ['pending', 'accepted', 'preparing', 'ready', 'completed'];
+
+const STATUS_LABEL = { 
+  pending: 'Order placed', 
+  accepted: 'Accepted by canteen', 
+  preparing: 'Being prepared', 
+  ready: 'Ready for pickup', 
+  completed: 'Picked up',
+  cancelled: 'Cancelled by you',
+  rejected: 'Declined by kitchen'
+};
 
 /* ---------- Nav ---------- */
 function renderNav(active){
@@ -377,3 +386,84 @@ function renderNav(active){
 }
 
 document.addEventListener('DOMContentLoaded', seedIfEmpty);
+
+// ============================================================
+// INVENTORY STOCK TOGGLE & PRINT SLIP HELPERS
+// ============================================================
+
+// 1. Toggle Item In-Stock / Sold-Out status
+function toggleItemStock(itemId) {
+  let menu = getMenu();
+  const index = menu.findIndex(m => m.id === itemId);
+  if (index !== -1) {
+    menu[index].available = !menu[index].available;
+    saveMenu(menu);
+    toast(`${menu[index].name} marked as ${menu[index].available ? 'In Stock' : 'Sold Out'}`);
+  }
+}
+
+// 2. Print 58mm/80mm Thermal Receipt Slip
+function printOrderSlip(orderId) {
+  const order = getOrders().find(o => o.id === orderId);
+  if (!order) return;
+
+  const printWindow = window.open('', '_blank', 'width=380,height=600');
+  const itemsHtml = order.items.map(item => `
+    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+      <span>${item.name} x ${item.qty}</span>
+      <span>${money(item.price * item.qty)}</span>
+    </div>
+  `).join('');
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Token #${order.token}</title>
+      <style>
+        @page { margin: 0; }
+        body {
+          font-family: 'Courier New', monospace;
+          width: 280px;
+          margin: 10px auto;
+          padding: 10px;
+          color: #000;
+        }
+        .text-center { text-align: center; }
+        .dashed { border-top: 1px dashed #000; margin: 8px 0; }
+        .token { font-size: 32px; font-weight: 800; margin: 6px 0; }
+        .bold { font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="text-center">
+        <h2 style="margin:0;">TIFFIN CANTEEN</h2>
+        <p style="margin:2px 0; font-size:12px;">Campus Pre-Order Token</p>
+        <div class="dashed"></div>
+        <div class="token">#${order.token}</div>
+        <div class="dashed"></div>
+      </div>
+      <div style="font-size:12px; margin-bottom:6px;">
+        <div><b>Time:</b> ${new Date(order.createdAt).toLocaleTimeString()}</div>
+        <div><b>Pickup:</b> ${new Date(order.pickupTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        <div><b>Status:</b> ${order.status.toUpperCase()}</div>
+      </div>
+      <div class="dashed"></div>
+      ${itemsHtml}
+      <div class="dashed"></div>
+      <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:bold;">
+        <span>TOTAL:</span>
+        <span>${money(order.total)}</span>
+      </div>
+      <div class="dashed"></div>
+      <p class="text-center" style="font-size:11px; margin-top:10px;">Please show this slip or token number at the counter.</p>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 300);
+}

@@ -2,100 +2,449 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kitchen Login — TIFFIN Staff</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060913">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TIFFIN">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Staff Access — TIFFIN</title>
+<link rel="stylesheet" href="style.css?v=16">
+<style>
+  html, body {
+    height: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #060913 !important;
+    margin: 0 !important;
+  }
+
+  .auth-wrap {
+    flex: 1 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 40px 16px 80px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .auth-grid {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+  }
+
+  .auth-panel {
+    width: 100% !important;
+    padding: 32px 28px !important;
+    border-radius: 20px !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .admin-header {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .admin-title {
+    font-family: var(--display);
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 800;
+    margin: 4px 0 6px;
+    color: #FFFFFF;
+  }
+
+  .admin-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .auth-tabs {
+    display: flex !important;
+    gap: 6px !important;
+    background: rgba(6, 9, 19, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .auth-tab {
+    flex: 1 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    color: var(--ink-soft) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .auth-tab.active {
+    background: rgba(56, 189, 248, 0.2) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
+
+  .auth-form.hidden-form {
+    display: none !important;
+  }
+
+  .auth-form .field {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+
+  .auth-form .field label {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    color: #38BDF8 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .auth-form .field input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 13px 16px !important;
+    background: rgba(11, 17, 32, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 12px !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+  }
+
+  .auth-form .btn-turmeric {
+    width: 100% !important;
+    margin-top: 6px !important;
+    padding: 13px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+    justify-content: center !important;
+  }
+
+  .small-note {
+    font-size: 12px !important;
+    margin: 14px 0 0 0 !important;
+    text-align: center !important;
+    color: var(--ink-soft) !important;
+  }
+
+  .auth-divider {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 18px 0 14px 0 !important;
+    color: #94A3B8 !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "" !important;
+    flex: 1 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .auth-divider span {
+    padding: 0 12px !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-google {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 12px 18px !important;
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
+    border-radius: 12px !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.25s ease !important;
+  }
+
+  .btn-google:hover {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-color: #38BDF8 !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .foot {
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    width: 100% !important;
+    background: rgba(6, 9, 19, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 0 !important;
+  }
+
+  .foot .wrap {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    color: #94A3B8 !important;
+  }
+</style>
 </head>
-<body class="dark-shell">
+<body>
 
 <nav class="nav">
   <div class="nav-inner">
-    <a href="index.html" class="brand"><span class="dot"></span><div>TIFFIN<small>Kitchen Dashboard</small></div></a>
-    <a href="index.html" class="btn btn-sm btn-outline on-dark">← Back to site</a>
+    <a href="index.html" class="brand">
+      <span class="dot"></span>
+      <div>TIFFIN<small>Kitchen Dashboard</small></div>
+    </a>
+    <a href="index.html" class="btn btn-sm btn-turmeric">← Back to site</a>
   </div>
 </nav>
 
-<main class="wrap admin-login-wrap">
-  <div class="admin-login-card panel">
-    <p class="eyebrow">Staff access</p>
-    <h1 class="al-title">Kitchen dashboard</h1>
-    <p class="muted" style="margin-bottom:24px;">Log in to manage the menu and today's orders.</p>
-    <form id="adminLoginForm">
-  <div class="field">
-    <label>Staff email</label>
-    <input type="email" id="adminEmail" placeholder="admin@canteen.com" required>
-  </div>
-  <div class="field">
-    <label>Password</label>
-    <input type="password" id="adminPass" placeholder="••••••••" required>
-  </div>
-  <button type="submit" class="btn btn-turmeric">Enter dashboard →</button>
-</form>
-    <p class="muted small-note">Demo staff account — <b>admin@canteen.com</b> / <b>admin123</b></p>
+<main class="wrap auth-wrap">
+  <div class="auth-grid">
+    <div class="auth-panel panel">
+      <div class="admin-header">
+        <p class="eyebrow">Staff Access</p>
+        <h1 class="admin-title">Kitchen Portal</h1>
+        <p class="admin-sub">Manage orders, update stock status, and control counter tokens.</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin" id="tabLogin" type="button">Staff Login</button>
+        <button class="auth-tab" data-tab="signup" id="tabRegister" type="button">Register Staff</button>
+      </div>
+
+      <!-- Staff Sign In Form -->
+      <form id="adminSigninForm" class="auth-form">
+        <div class="field">
+          <label for="admin-si-email">Staff Email</label>
+          <input type="email" id="admin-si-email" placeholder="admin@canteen.com" value="admin@canteen.com" required>
+        </div>
+        <div class="field">
+          <label for="admin-si-pass">Password</label>
+          <input type="password" id="admin-si-pass" placeholder="••••••••" value="admin123" required>
+        </div>
+        <button type="submit" class="btn btn-turmeric">Enter Dashboard →</button>
+        <p class="muted small-note">Demo staff account — <strong>admin@canteen.com</strong> / <strong>admin123</strong></p>
+
+        <div class="auth-divider">
+          <span>or continue with</span>
+        </div>
+        <button type="button" class="btn-google adminGoogleAuthBtn">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>Sign-In With Google</span>
+        </button>
+      </form>
+
+      <!-- Staff Sign Up Form -->
+      <form id="adminSignupForm" class="auth-form hidden-form">
+        <div class="field">
+          <label for="admin-su-name">Staff Name</label>
+          <input type="text" id="admin-su-name" placeholder="Kitchen Chef / Manager" required>
+        </div>
+        <div class="field">
+          <label for="admin-su-email">Work Email</label>
+          <input type="email" id="admin-su-email" placeholder="staff@canteen.com" required>
+        </div>
+        <div class="field">
+          <label for="admin-su-pass">Password</label>
+          <input type="password" id="admin-su-pass" placeholder="At least 6 characters" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-turmeric">Create Staff Account →</button>
+
+        <div class="auth-divider">
+          <span>or continue with</span>
+        </div>
+        <button type="button" class="btn-google adminGoogleAuthBtn">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>Sign Up with Google</span>
+        </button>
+      </form>
+    </div>
   </div>
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <span>TIFFIN — Campus Canteen Pre-Order</span>
-    <span>Staff-only area.</span>
+    <span>TIFFIN — Campus Canteen Staff</span>
+    <span>Kitchen &amp; Order Operations</span>
   </div>
 </footer>
 
 <div id="toast"></div>
-<script src="app.js"></script>
-<script>
-  // Redirect if already logged in as staff
-  if (typeof currentStaff === 'function' && currentStaff()) {
-    window.location.href = 'admin.html';
-  }
 
-  const adminForm = document.getElementById('adminLoginForm') || document.querySelector('form');
-
-  if (adminForm) {
-    adminForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const emailInput = document.getElementById('adminEmail') || adminForm.querySelector('input[type="email"]');
-      const passInput = document.getElementById('adminPass') || adminForm.querySelector('input[type="password"]');
-
-      const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
-      const password = passInput ? passInput.value : '';
-
-      // Fetch users from app.js / localStorage
-      const users = typeof getUsers === 'function' ? getUsers() : JSON.parse(localStorage.getItem('tiffin_users') || '[]');
-      const staff = users.find(u => u.email.toLowerCase() === email && u.role === 'admin');
-
-      if (staff && staff.password === password) {
-        // Save admin session
-        if (typeof setAdminSession === 'function') {
-          setAdminSession(staff.id);
-        } else {
-          localStorage.setItem('tiffin_admin_session', JSON.stringify({ uid: staff.id }));
-        }
-
-        if (typeof toast === 'function') {
-          toast(`Welcome, ${staff.name}!`);
-        } else {
-          alert(`Welcome, ${staff.name}!`);
-        }
-
-        setTimeout(() => {
-          window.location.href = 'admin.html';
-        }, 300);
-      } else {
-        if (typeof toast === 'function') {
-          toast('Invalid staff email or password');
-        } else {
-          alert('Invalid staff email or password');
-        }
-      }
-    });
-  }
-</script>
-<!-- Firebase App (Core) and Services -->
+<!-- Firebase Compatibility SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script src="app.js"></script>
+
+<script>
+  seedIfEmpty();
+
+  const tabButtons = document.querySelectorAll('.auth-tab');
+  const signinForm = document.getElementById('adminSigninForm');
+  const signupForm = document.getElementById('adminSignupForm');
+
+  tabButtons.forEach((tab) => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabButtons.forEach(b => b.classList.remove('active'));
+      tab.classList.add('active');
+
+      const target = tab.dataset.tab;
+
+      if (target === 'signin') {
+        signinForm.classList.remove('hidden-form');
+        signupForm.classList.add('hidden-form');
+      } else {
+        signinForm.classList.add('hidden-form');
+        signupForm.classList.remove('hidden-form');
+      }
+    });
+  });
+
+  // 1. Staff Sign In Handler
+  signinForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-si-email').value.trim().toLowerCase();
+    const pass = document.getElementById('admin-si-pass').value;
+
+    const users = getUsers();
+    const staff = users.find(u => u.email.toLowerCase() === email && u.password === pass && u.role === 'admin');
+
+    if (staff) {
+      setAdminSession(staff.id);
+      toast('Staff access verified. Opening dashboard...');
+      setTimeout(() => { window.location.href = 'kiosk.html'; }, 500);
+    } else {
+      toast('Invalid staff credentials.');
+    }
+  });
+
+  // 2. Staff Sign Up Handler
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('admin-su-name').value.trim();
+    const email = document.getElementById('admin-su-email').value.trim().toLowerCase();
+    const password = document.getElementById('admin-su-pass').value;
+
+    let users = getUsers();
+    if (users.some(u => u.email.toLowerCase() === email)) {
+      toast('An account with this email already exists.');
+      return;
+    }
+
+    const newStaff = {
+      id: uid('u-admin'),
+      name: name,
+      email: email,
+      password: password,
+      role: 'admin'
+    };
+
+    users.push(newStaff);
+    saveUsers(users);
+    setAdminSession(newStaff.id);
+    toast('Staff account created successfully!');
+    setTimeout(() => { window.location.href = 'kiosk.html'; }, 500);
+  });
+
+  // 3. Staff Google Sign In
+  document.querySelectorAll('.adminGoogleAuthBtn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!auth) {
+        toast('Firebase Auth is not initialized.');
+        return;
+      }
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+
+        let users = getUsers();
+        let staffObj = users.find(u => u.email.toLowerCase() === user.email.toLowerCase() && u.role === 'admin');
+
+        if (!staffObj) {
+          staffObj = {
+            id: user.uid,
+            name: user.displayName || 'Kitchen Staff',
+            email: user.email.toLowerCase(),
+            role: 'admin'
+          };
+          users.push(staffObj);
+          saveUsers(users);
+        }
+
+        setAdminSession(staffObj.id);
+        toast('Welcome back, ' + staffObj.name + '!');
+        setTimeout(() => { window.location.href = 'kiosk.html'; }, 500);
+      } catch (err) {
+        if (err.code !== 'auth/popup-closed-by-user') {
+          toast(err.message);
+        }
+      }
+    });
+  });
+</script>
 </body>
 </html>

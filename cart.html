@@ -2,9 +2,160 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Your Cart — TIFFIN</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=11">
+<style>
+  html, body {
+    height: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #060913 !important;
+    margin: 0 !important;
+  }
+
+  .cart-wrap {
+    flex: 1 0 auto !important;
+    padding: 30px 16px 80px !important;
+    width: 100% !important;
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .page-title {
+    font-family: var(--display);
+    font-size: clamp(26px, 4vw, 36px);
+    margin: 8px 0 24px;
+  }
+
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+  }
+
+  @media (max-width: 880px) {
+    .cart-layout { grid-template-columns: 1fr; }
+  }
+
+  .cart-line {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .cart-line:last-child { border-bottom: none; }
+  .cart-line-name { font-weight: 700; flex: 1; font-size: 15px; }
+  .cart-line-price { font-family: var(--mono); color: var(--ink-soft); font-size: 13px; }
+  
+  .qty-row { display: flex; align-items: center; gap: 8px; }
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(15, 23, 42, 0.8);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .qty-val { font-family: var(--mono); font-weight: 700; min-width: 16px; text-align: center; }
+  .line-total { font-family: var(--mono); font-weight: 700; width: 60px; text-align: right; }
+  .remove-btn { background: none; border: none; color: var(--chili); font-size: 12px; font-weight: 700; cursor: pointer; }
+
+  .summary-panel { padding: 24px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; }
+  .summary-row.total {
+    font-weight: 700;
+    font-size: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 8px;
+    padding-top: 12px;
+    color: #fff;
+  }
+
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 10px 0 20px;
+  }
+  .slot-btn {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(15, 23, 42, 0.75);
+    border-radius: 8px;
+    padding: 10px 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .slot-btn.active {
+    background: var(--honey) !important;
+    border-color: var(--honey) !important;
+    color: #060913 !important;
+    font-weight: 800 !important;
+  }
+
+  /* UPI Modal Styles */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999999;
+    padding: 16px;
+  }
+
+  .upi-card {
+    width: 100%;
+    max-width: 360px;
+    padding: 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    background: #0b1120 !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95) !important;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .foot {
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    width: 100% !important;
+    background: rgba(6, 9, 19, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 0 !important;
+  }
+
+  .foot .wrap {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    color: #94A3B8 !important;
+  }
+</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -12,56 +163,62 @@
 <main class="wrap cart-wrap">
   <p class="eyebrow">Step 2 of 2</p>
   <h1 class="page-title">Your cart</h1>
-
   <div id="cartLayout" class="cart-layout"></div>
 </main>
 
 <footer class="foot">
   <div class="wrap">
     <span>TIFFIN — Campus Canteen Pre-Order</span>
-    <span>Payment is collected at the counter on pickup.</span>
+    <span>Instant online token generation with UPI.</span>
   </div>
 </footer>
 
+<!-- UPI Payment Gateway Modal -->
+<div id="upiModal" class="modal-backdrop" style="display:none;">
+  <div class="panel upi-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0; font-family:var(--display); font-size:18px;">Pay via UPI</h3>
+      <button type="button" class="close-btn" onclick="closeUpiModal()">✕</button>
+    </div>
+    
+    <div style="text-align:center; padding:8px 0;">
+      <p style="color:var(--ink-soft); font-size:12.5px; margin-bottom:12px;">Scan with GPay, PhonePe, Paytm, or BHIM</p>
+      
+      <div style="background:#fff; padding:12px; border-radius:14px; display:inline-block;">
+        <img id="upiQrImage" src="" alt="UPI QR Code" style="width:160px; height:160px; display:block;">
+      </div>
+
+      <div style="margin-top:14px; font-family:var(--mono); font-size:18px; font-weight:800; color:var(--honey);">
+        Amount: <span id="upiAmountText">₹0</span>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+      <button type="button" class="btn btn-turmeric" style="width:100%;" onclick="finalizeUpiOrder()">
+        ✓ I Have Paid (Generate Token)
+      </button>
+      <button type="button" class="btn btn-outline" style="width:100%;" onclick="closeUpiModal()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <script src="app.js"></script>
-<style>
-  .cart-wrap{ padding:44px 0 80px; }
-  .page-title{ font-family:var(--display); font-size:clamp(28px,4vw,38px); margin:8px 0 30px; }
-  .cart-layout{ display:grid; grid-template-columns:1.4fr 1fr; gap:28px; align-items:start; }
-  @media (max-width:880px){ .cart-layout{ grid-template-columns:1fr; } }
-
-  .cart-line{ display:flex; align-items:center; gap:14px; padding:16px 20px; border-bottom:1px solid var(--line); }
-  .cart-line:last-child{ border-bottom:none; }
-  .cart-line-name{ font-weight:700; flex:1; }
-  .cart-line-price{ font-family:var(--mono); color:var(--ink-soft); font-size:13px; }
-  .qty-row{ display:flex; align-items:center; gap:10px; }
-  .qty-btn{ width:28px; height:28px; border-radius:8px; border:2px solid var(--ink); background:var(--paper); font-weight:700; }
-  .qty-val{ font-family:var(--mono); font-weight:700; min-width:14px; text-align:center; }
-  .line-total{ font-family:var(--mono); font-weight:700; width:58px; text-align:right; }
-  .remove-btn{ background:none; border:none; color:var(--chili); font-size:12px; font-weight:700; }
-
-  .summary-panel{ padding:26px; position:sticky; top:96px; }
-  .summary-row{ display:flex; justify-content:space-between; font-size:14px; padding:8px 0; }
-  .summary-row.total{ font-weight:700; font-size:17px; border-top:1px solid var(--line); margin-top:8px; padding-top:14px; }
-  .slot-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:6px; }
-  .slot-btn{ border:2px solid var(--line); background:var(--paper); border-radius:8px; padding:9px 6px; font-family:var(--mono); font-size:12.5px; font-weight:700; }
-  .slot-btn.active{ background:var(--ink); border-color:var(--ink); color:var(--cream); }
-  .slot-btn:disabled{ opacity:0.35; text-decoration:line-through; }
-</style>
 <script>
   renderNav('cart');
   
-  // 1. Allow guest viewing — do NOT kick them out immediately
-  const student = currentStudent();
-  const currentUid = student ? student.id : 'guest';
+  let selectedSlotIdx = 0;
+  let currentSlots = [];
+  let pendingOrderData = null;
 
   function buildSlots(){
     const slots = [];
     const now = new Date();
     let start = new Date(now.getTime() + 15*60000);
     start.setMinutes(Math.ceil(start.getMinutes()/10)*10, 0, 0);
-    for(let i=0;i<9;i++){
+    for(let i=0; i<9; i++){
       const t = new Date(start.getTime() + i*10*60000);
       slots.push(t);
     }
@@ -69,8 +226,9 @@
   }
 
   function renderCart(){
+    const student = currentStudent();
+    const currentUid = student ? student.id : 'guest';
     const cart = getCart(currentUid);
-    const menu = getMenu();
     const layout = document.getElementById('cartLayout');
 
     if(cart.length === 0){
@@ -84,95 +242,65 @@
     }
 
     const subtotal = cart.reduce((s,l)=> s + l.price*l.qty, 0);
-    const slots = buildSlots();
+    currentSlots = buildSlots();
 
     layout.innerHTML = `
-      <div class="panel" id="linesPanel"></div>
+      <div class="panel" id="linesPanel">
+        ${cart.map(l => `
+          <div class="cart-line" data-id="${l.id}">
+            <div style="flex:1;">
+              <div class="cart-line-name">${l.name}</div>
+              <div class="cart-line-price">${money(l.price)} each</div>
+            </div>
+            <div class="qty-row">
+              <button type="button" class="qty-btn" data-action="dec" data-id="${l.id}">–</button>
+              <span class="qty-val">${l.qty}</span>
+              <button type="button" class="qty-btn" data-action="inc" data-id="${l.id}">+</button>
+            </div>
+            <div class="line-total">${money(l.price*l.qty)}</div>
+            <button type="button" class="remove-btn" data-action="remove" data-id="${l.id}">✕</button>
+          </div>
+        `).join('')}
+      </div>
       <div class="panel summary-panel">
         <h3 style="font-family:var(--display); font-size:16px; margin:0 0 16px;">Order summary</h3>
         <div class="summary-row"><span>Items (${cart.reduce((s,l)=>s+l.qty,0)})</span><span>${money(subtotal)}</span></div>
         <div class="summary-row"><span>Service fee</span><span>₹0</span></div>
-        <div class="summary-row total"><span>Total (pay at counter)</span><span>${money(subtotal)}</span></div>
-        <hr class="hr">
+        <div class="summary-row total"><span>Total Payable</span><span>${money(subtotal)}</span></div>
+        <hr class="hr" style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:14px 0;">
         <label style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft);">Pickup time</label>
         <div class="slot-grid" id="slotGrid">
-          ${slots.map((t,i) => `<button class="slot-btn ${i===0?'active':''}" data-idx="${i}">${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</button>`).join('')}
+          ${currentSlots.map((t,i) => `<button type="button" class="slot-btn ${i===selectedSlotIdx?'active':''}" data-idx="${i}">${t.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</button>`).join('')}
         </div>
-        <button class="btn btn-turmeric btn-block" id="placeOrderBtn" style="margin-top:20px;">
-          ${student ? 'Place order →' : 'Log in to Place Order →'}
+        <button type="button" class="btn btn-turmeric" id="payUpiBtn" style="width:100%; margin-top:10px;" onclick="triggerCheckout()">
+          Proceed to Pay (UPI) →
         </button>
       </div>`;
-
-    const linesPanel = document.getElementById('linesPanel');
-    linesPanel.innerHTML = cart.map(l => `
-      <div class="cart-line" data-id="${l.id}">
-        <div style="flex:1;">
-          <div class="cart-line-name">${l.name}</div>
-          <div class="cart-line-price">${money(l.price)} each</div>
-        </div>
-        <div class="qty-row">
-          <button class="qty-btn" data-action="dec">–</button>
-          <span class="qty-val">${l.qty}</span>
-          <button class="qty-btn" data-action="inc">+</button>
-        </div>
-        <div class="line-total">${money(l.price*l.qty)}</div>
-        <button class="remove-btn" data-action="remove">Remove</button>
-      </div>`).join('');
-
-    linesPanel.querySelectorAll('.cart-line').forEach(row => {
-      const id = row.dataset.id;
-      row.querySelector('[data-action="dec"]').addEventListener('click', () => updateLine(id, -1));
-      row.querySelector('[data-action="inc"]').addEventListener('click', () => updateLine(id, 1));
-      row.querySelector('[data-action="remove"]').addEventListener('click', () => updateLine(id, -9999));
-    });
-
-    let selectedSlotIdx = 0;
-    document.querySelectorAll('.slot-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedSlotIdx = parseInt(btn.dataset.idx,10);
-      });
-    });
-
-    // 2. Mandatory Login Verification on Ordering
-    document.getElementById('placeOrderBtn').addEventListener('click', () => {
-      const activeStudent = currentStudent();
-      
-      if (!activeStudent) {
-        toast('Please log in first to place your order');
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 600);
-        return;
-      }
-
-      const currentCart = getCart(activeStudent.id);
-      if(currentCart.length === 0){ toast('Your cart is empty.'); return; }
-      
-      const pickupTime = slots[selectedSlotIdx];
-      const total = currentCart.reduce((s,l)=> s + l.price*l.qty, 0);
-      const orders = getOrders();
-      const token = nextToken();
-      const order = {
-        id: uid('o'),
-        token,
-        uid: activeStudent.id,
-        userName: activeStudent.name,
-        items: currentCart,
-        total,
-        pickupTime: pickupTime.toISOString(),
-        status: 'pending',
-        createdAt: new Date().toISOString()
-      };
-      orders.push(order);
-      saveOrders(orders);
-      saveCart(activeStudent.id, []);
-      window.location.href = `track.html?order=${order.id}`;
-    });
   }
 
+  // Global event delegation for line items and slots
+  document.getElementById('cartLayout').addEventListener('click', (e) => {
+    const actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+      const id = actionBtn.dataset.id;
+      const action = actionBtn.dataset.action;
+      if (action === 'dec') updateLine(id, -1);
+      if (action === 'inc') updateLine(id, 1);
+      if (action === 'remove') updateLine(id, -9999);
+      return;
+    }
+
+    const slotBtn = e.target.closest('.slot-btn');
+    if (slotBtn) {
+      document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+      slotBtn.classList.add('active');
+      selectedSlotIdx = parseInt(slotBtn.dataset.idx, 10);
+    }
+  });
+
   function updateLine(itemId, delta){
+    const student = currentStudent();
+    const currentUid = student ? student.id : 'guest';
     let cart = getCart(currentUid);
     const line = cart.find(l=>l.id===itemId);
     if(!line) return;
@@ -185,6 +313,74 @@
     saveCart(currentUid, cart);
     renderNav('cart');
     renderCart();
+  }
+
+  function triggerCheckout() {
+    const activeStudent = currentStudent();
+    if (!activeStudent) {
+      toast('Please log in first to place your order');
+      setTimeout(() => { window.location.href = 'login.html'; }, 600);
+      return;
+    }
+
+    const currentCart = getCart(activeStudent.id);
+    if(currentCart.length === 0){ 
+      toast('Your cart is empty.'); 
+      return; 
+    }
+    
+    const pickupTime = currentSlots[selectedSlotIdx] || new Date();
+    const total = currentCart.reduce((s,l)=> s + l.price*l.qty, 0);
+
+    pendingOrderData = {
+      uid: activeStudent.id,
+      userName: activeStudent.name,
+      items: currentCart,
+      total: total,
+      pickupTime: pickupTime.toISOString()
+    };
+
+    const upiId = "canteen@upi"; 
+    const name = "Tiffin Canteen";
+    const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(name)}&am=${total}&cu=INR`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiUrl)}`;
+
+    document.getElementById('upiQrImage').src = qrUrl;
+    document.getElementById('upiAmountText').textContent = money(total);
+    document.getElementById('upiModal').style.display = 'flex';
+  }
+
+  function closeUpiModal() {
+    document.getElementById('upiModal').style.display = 'none';
+    pendingOrderData = null;
+  }
+
+  function finalizeUpiOrder() {
+    if (!pendingOrderData) return;
+
+    const orders = getOrders();
+    const token = nextToken();
+    const order = {
+      id: uid('o'),
+      token: token,
+      uid: pendingOrderData.uid,
+      userName: pendingOrderData.userName,
+      items: pendingOrderData.items,
+      total: pendingOrderData.total,
+      pickupTime: pendingOrderData.pickupTime,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+
+    orders.push(order);
+    saveOrders(orders);
+    saveCart(pendingOrderData.uid, []);
+    
+    closeUpiModal();
+    toast('Payment confirmed! Token #' + token + ' generated.');
+    setTimeout(() => {
+      window.location.href = `track.html?order=${order.id}`;
+    }, 400);
   }
 
   renderCart();

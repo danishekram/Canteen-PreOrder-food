@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tiffin-cache-v2';
+const CACHE_NAME = 'tiffin-cache-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting(); // Forces new SW to activate immediately

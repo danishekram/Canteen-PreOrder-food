@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Character Encoding & Viewport -->
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<!-- PWA Manifest & App Theming -->
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#060913">
 <meta name="mobile-web-app-capable" content="yes">
@@ -13,25 +11,204 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TIFFIN">
 
-<!-- Standard Browser & Android Icons -->
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
-
-<!-- iOS Safari Home Screen Icons -->
 <link rel="apple-touch-icon" href="/icon-192.png">
-<link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png">
-  <title>Log in — TIFFIN</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .auth-wrap { padding: 56px 0 80px; }
-    .auth-grid { display: flex; justify-content: center; align-items: center; width: 100%; max-width: 440px; margin: 0 auto; }
-    .auth-panel { width: 100%; padding: 32px; }
-    .auth-tabs { display: flex; gap: 6px; background: rgba(6, 9, 19, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 5px; margin-bottom: 26px; }
-    .auth-tab { flex: 1; border: none; background: transparent; padding: 11px; border-radius: 8px; font-weight: 700; font-size: 14px; color: var(--ink-soft); cursor: pointer; transition: all 0.2s ease; }
-    .auth-tab.active { background: rgba(56, 189, 248, 0.2); color: #FFFFFF; border: 1px solid rgba(56, 189, 248, 0.4); box-shadow: 0 0 15px rgba(56, 189, 248, 0.25); }
-    .small-note { font-size: 12px; margin-top: 12px; text-align: center; color: var(--ink-soft); }
-  </style>
+<title>Log in — TIFFIN</title>
+<link rel="stylesheet" href="style.css?v=20">
+<style>
+  html, body {
+    height: 100% !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #060913 !important;
+    margin: 0 !important;
+  }
+
+  .auth-wrap {
+    flex: 1 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 40px 16px 80px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .auth-grid {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+  }
+
+  .auth-panel {
+    width: 100% !important;
+    padding: 32px 28px !important;
+    border-radius: 20px !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .auth-tabs {
+    display: flex !important;
+    gap: 6px !important;
+    background: rgba(6, 9, 19, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 5px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .auth-tab {
+    flex: 1 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    color: var(--ink-soft) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .auth-tab.active {
+    background: rgba(56, 189, 248, 0.2) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.25) !important;
+  }
+
+  /* Strict Form Layout */
+  .auth-form {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0 !important;
+  }
+
+  .auth-form .field {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+  }
+
+  .auth-form .field label {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+    color: #38BDF8 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .auth-form .field input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 13px 16px !important;
+    background: rgba(11, 17, 32, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 12px !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+  }
+
+  .auth-form .btn-turmeric {
+    width: 100% !important;
+    margin-top: 6px !important;
+    padding: 13px !important;
+    font-size: 15px !important;
+    border-radius: 12px !important;
+    justify-content: center !important;
+  }
+
+  .small-note {
+    font-size: 12px !important;
+    margin: 14px 0 0 0 !important;
+    text-align: center !important;
+    color: var(--ink-soft) !important;
+  }
+
+  .auth-divider {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin: 18px 0 14px 0 !important;
+    color: #94A3B8 !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "" !important;
+    flex: 1 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .auth-divider span {
+    padding: 0 12px !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-google {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    padding: 12px 18px !important;
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.4) !important;
+    border-radius: 12px !important;
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+    transition: all 0.25s ease !important;
+  }
+
+  .btn-google:hover {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-color: #38BDF8 !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  .foot {
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+    width: 100% !important;
+    background: rgba(6, 9, 19, 0.95) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 16px 0 !important;
+  }
+
+  .foot .wrap {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px 16px !important;
+    padding: 0 16px !important;
+    font-size: 12px !important;
+    color: #94A3B8 !important;
+  }
+</style>
 </head>
 <body>
 <div id="nav-root"></div>
@@ -40,12 +217,12 @@
   <div class="auth-grid">
     <div class="auth-panel panel">
       <div class="auth-tabs">
-        <button class="auth-tab active" data-tab="signin" id="tabLogin" type="button">Log in</button>
-        <button class="auth-tab" data-tab="signup" id="tabRegister" type="button">Create account</button>
+        <button class="auth-tab active" id="tabLogin" type="button" onclick="showTab('signin')">Log in</button>
+        <button class="auth-tab" id="tabRegister" type="button" onclick="showTab('signup')">Create account</button>
       </div>
 
-      <!-- Sign In Form -->
-      <form id="signinForm" class="auth-form">
+      <!-- Sign In Form (Default Visible) -->
+      <form id="signinForm" class="auth-form" style="display: flex !important;">
         <div class="field">
           <label for="si-email">Email</label>
           <input type="email" id="si-email" placeholder="you@campus.edu" required>
@@ -71,8 +248,8 @@
         </button>
       </form>
 
-      <!-- Sign Up Form -->
-      <form id="signupForm" class="auth-form" style="display:none;">
+      <!-- Sign Up Form (Default Hidden) -->
+      <form id="signupForm" class="auth-form" style="display: none !important;">
         <div class="field">
           <label for="su-name">Full name</label>
           <input type="text" id="su-name" placeholder="Aarav Shah" required>
@@ -113,117 +290,82 @@
 
 <div id="toast"></div>
 
-<!-- 1. Firebase Compatibility SDKs -->
+<!-- Firebase Compatibility SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-<!-- 2. Application Logic -->
-<script src="app.js"></script>
+<script src="app.js?v=20"></script>
 
 <script>
   renderNav('login');
 
-  // Tab Switching
-  const tabButtons = document.querySelectorAll('.auth-tab');
-  const signinForm = document.getElementById('signinForm');
-  const signupForm = document.getElementById('signupForm');
+  function showTab(type) {
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const signinForm = document.getElementById('signinForm');
+    const signupForm = document.getElementById('signupForm');
 
-  tabButtons.forEach((tab, index) => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      tabButtons.forEach(b => b.classList.remove('active'));
-      tab.classList.add('active');
+    if (type === 'signin') {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      signinForm.style.setProperty('display', 'flex', 'important');
+      signupForm.style.setProperty('display', 'none', 'important');
+    } else {
+      tabLogin.classList.remove('active');
+      tabRegister.classList.add('active');
+      signinForm.style.setProperty('display', 'none', 'important');
+      signupForm.style.setProperty('display', 'flex', 'important');
+    }
+  }
 
-      const target = tab.dataset.tab || (index === 0 ? 'signin' : 'signup');
+  // Email Sign Up
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('su-name').value.trim();
+    const email = document.getElementById('su-email').value.trim();
+    const password = document.getElementById('su-pass').value;
 
-      if (target === 'signin') {
-        if (signinForm) signinForm.style.display = 'flex';
-        if (signupForm) signupForm.style.display = 'none';
-      } else {
-        if (signinForm) signinForm.style.display = 'none';
-        if (signupForm) signupForm.style.display = 'flex';
+    try {
+      const user = await registerUser(name, email, password);
+      if (user) {
+        setTimeout(() => { window.location.href = 'menu.html'; }, 400);
       }
-    });
+    } catch (err) {
+      console.error(err);
+    }
   });
 
-  // 1. Email Sign Up Handler
-  if (signupForm) {
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('su-name').value.trim();
-      const email = document.getElementById('su-email').value.trim();
-      const password = document.getElementById('su-pass').value;
+  // Email Login
+  document.getElementById('signinForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('si-email').value.trim();
+    const password = document.getElementById('si-pass').value;
 
-      try {
-        const user = await registerUser(name, email, password);
-        if (user) {
-          setTimeout(() => {
-            window.location.href = 'menu.html';
-          }, 400);
-        }
-      } catch (err) {
-        console.error(err);
+    try {
+      const user = await loginUser(email, password);
+      if (user) {
+        setTimeout(() => { window.location.href = 'menu.html'; }, 400);
       }
-    });
-  }
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
-  // 2. Email Login Handler
-  if (signinForm) {
-    signinForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('si-email').value.trim();
-      const password = document.getElementById('si-pass').value;
-
-      try {
-        const user = await loginUser(email, password);
-        if (user) {
-          setTimeout(() => {
-            window.location.href = 'menu.html';
-          }, 400);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
-  }
-
-  // 3. Google Sign In Handler
+  // Google Sign In
   document.querySelectorAll('.googleAuthBtn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.preventDefault();
       try {
         const user = await loginWithGoogle();
         if (user) {
-          setTimeout(() => {
-            window.location.href = 'menu.html';
-          }, 400);
+          setTimeout(() => { window.location.href = 'menu.html'; }, 400);
         }
       } catch (err) {
         console.error(err);
       }
     });
   });
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    let refreshing = false;
-
-    // Detect when the new service worker takes over and refresh the app
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        refreshing = true;
-        window.location.reload();
-      }
-    });
-
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then((reg) => {
-        // Check for updates on every app launch
-        reg.update();
-      });
-    });
-  }
 </script>
 </body>
 </html>

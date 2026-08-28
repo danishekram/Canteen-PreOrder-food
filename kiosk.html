@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Display System — TIFFIN</title>
+<link rel="stylesheet" href="style.css?v=17">
+<style>
+  body {
+    background: #060913 !important;
+    padding: 20px;
+  }
+  .kiosk-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .kiosk-columns {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .kiosk-columns { grid-template-columns: 1fr; }
+  }
+
+  /* Live Order Cards Grid */
+  .orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .kiosk-card {
+    padding: 16px;
+    border-radius: 14px;
+    border-left: 6px solid var(--honey);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .kiosk-card.ready { border-left-color: var(--mint); }
+  .kiosk-card.cancelled { border-left-color: var(--chili); opacity: 0.7; }
+
+  /* Inventory Stock List */
+  .stock-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+  }
+  .toggle-switch {
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .in-stock { background: rgba(52, 211, 153, 0.2); color: var(--mint); border: 1px solid var(--mint); }
+  .out-stock { background: rgba(251, 113, 133, 0.2); color: var(--chili); border: 1px solid var(--chili); }
+</style>
+</head>
+<body>
+
+<div class="kiosk-nav">
+  <div>
+    <h1 style="margin:0; font-family:var(--display); font-size:24px;">🍳 Kitchen Display System</h1>
+    <small style="color:var(--ice-cyan); font-family:var(--mono);">LIVE ORDERS & INVENTORY CONTROLS</small>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <button class="btn btn-outline" onclick="window.location.reload()">↻ Refresh</button>
+    <a href="menu.html" class="btn btn-turmeric">Go to Menu</a>
+  </div>
+</div>
+
+<div class="kiosk-columns">
+  <!-- Active Cooking Queue -->
+  <div>
+    <h2 style="font-size:18px; margin-bottom:14px;">Active Orders Queue</h2>
+    <div id="kioskOrders" class="orders-grid"></div>
+  </div>
+
+  <!-- Real-Time Stock Management -->
+  <div>
+    <h2 style="font-size:18px; margin-bottom:14px;">Inventory Status</h2>
+    <div id="stockList" class="panel" style="padding:16px;"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  function renderKiosk() {
+    const orders = getOrders().filter(o => o.status !== 'completed' && o.status !== 'cancelled' && o.status !== 'rejected');
+    const ordersContainer = document.getElementById('kioskOrders');
+
+    if (orders.length === 0) {
+      ordersContainer.innerHTML = `<div class="panel" style="padding:20px; color:var(--ink-soft);">No active orders right now.</div>`;
+    } else {
+      ordersContainer.innerHTML = orders.map(o => `
+        <div class="panel kiosk-card ${o.status === 'ready' ? 'ready' : ''}">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:var(--mono); font-size:22px; font-weight:800; color:var(--honey);">#${o.token}</span>
+              <span class="tag tag-status">${o.status.toUpperCase()}</span>
+            </div>
+            <div style="font-size:12px; color:var(--ink-soft); margin:4px 0 10px;">
+              Pickup: ${new Date(o.pickupTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+            </div>
+            <div style="border-top:1px solid rgba(255,255,255,0.08); padding:8px 0;">
+              ${o.items.map(i => `<div style="font-size:14px; font-weight:600;">${i.name} × ${i.qty}</div>`).join('')}
+            </div>
+          </div>
+          
+          <div style="display:flex; flex-direction:column; gap:6px; margin-top:12px;">
+            <div style="display:flex; gap:8px;">
+              ${o.status === 'pending' || o.status === 'accepted' ? `<button class="btn btn-sm btn-turmeric" style="flex:1;" onclick="updateOrderStatus('${o.id}', 'preparing')">Cook</button>` : ''}
+              ${o.status === 'preparing' ? `<button class="btn btn-sm btn-turmeric" style="flex:1; background:var(--mint)!important;" onclick="updateOrderStatus('${o.id}', 'ready')">Ready</button>` : ''}
+              ${o.status === 'ready' ? `<button class="btn btn-sm btn-outline" style="flex:1;" onclick="updateOrderStatus('${o.id}', 'completed')">Complete</button>` : ''}
+              <button class="btn btn-sm btn-outline" title="Print Slip" onclick="printOrderSlip('${o.id}')">🖨️</button>
+            </div>
+            
+            ${o.status === 'pending' || o.status === 'accepted' ? `
+              <button class="btn btn-sm btn-outline" style="color:var(--chili); border-color:rgba(251,113,133,0.3); font-size:11.5px; padding:6px;" onclick="rejectOrder('${o.id}')">
+                ✕ Reject Order
+              </button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render stock toggles
+    const menu = getMenu();
+    document.getElementById('stockList').innerHTML = menu.map(item => `
+      <div class="stock-item">
+        <span style="font-weight:600; font-size:14px;">${item.name}</span>
+        <button class="toggle-switch ${item.available ? 'in-stock' : 'out-stock'}" onclick="toggleStock('${item.id}')">
+          ${item.available ? '● IN STOCK' : '✕ SOLD OUT'}
+        </button>
+      </div>
+    `).join('');
+  }
+
+  function updateOrderStatus(orderId, newStatus) {
+    let orders = getOrders();
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      order.status = newStatus;
+      saveOrders(orders);
+      renderKiosk();
+      toast(`Token #${order.token} moved to ${newStatus}`);
+    }
+  }
+
+  function rejectOrder(orderId) {
+    if (!confirm('Decline this order? The student will be notified on their track screen.')) return;
+    updateOrderStatus(orderId, 'rejected');
+  }
+
+  function toggleStock(itemId) {
+    toggleItemStock(itemId);
+    renderKiosk();
+  }
+
+  renderKiosk();
+  setInterval(renderKiosk, 4000);
+</script>
+</body>
+</html>
